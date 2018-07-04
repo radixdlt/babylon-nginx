@@ -4,7 +4,8 @@
 
 # Advanced Topics
 
-* [Metrics](docs/Metrics.md)
+* [Prometheus Metrics](docs/Metrics.md)
+* [Grafana Dashboards](docs/Grafana.md)
 
 # Help
 
