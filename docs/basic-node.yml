@@ -9,7 +9,6 @@ services:
     environment:
       WIPE_LEDGER: "no"
       WIPE_NODE_KEY: "no"
-      WIPE_ADMIN_PASSWORD: "no"
       CORE_GOSSIP_PORT: 20000
       CORE_NETWORK_SEEDS:
       CORE_NETWORK_DISCOVERY_URLS: https://alphanet.radixdlt.com/node-finder
@@ -27,6 +26,8 @@ services:
     restart: unless-stopped
     ports:
       - "443:443"
+    environment:
+      WIPE_ADMIN_PASSWORD: "no"
     volumes:
       - "nginx_secrets:/etc/nginx/secrets"
     logging:
