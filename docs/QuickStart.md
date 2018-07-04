@@ -91,7 +91,7 @@ Launch the Docker containers with:
 
 ```shell
 cd ~/radixdlt
-docker-compose -f basic-node.yml up -d
+docker-compose -p radixdlt -f basic-node.yml up -d
 ```
 
 If successful, it should pull down and look something like this when completed:
@@ -161,7 +161,7 @@ If you want access to nice buttons and a live log view; this is definitely for y
 Changing the configuration below in your docker compose file requires that your re-run docker compose:
 
 ```shell
-docker-compose -f basic-node.yml up -d
+docker-compose -p radixdlt -f basic-node.yml up -d
 ```
 
 ### WIPE_ADMIN_PASSWORD
