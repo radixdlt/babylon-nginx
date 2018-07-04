@@ -156,7 +156,7 @@ If you want access to nice buttons and a live log view; this is definitely for y
 
 [Kitematic by Docker](https://kitematic.com/)
 
-## Node Configuration Options For docker-composer.yml
+## Node Configuration Options
 
 Changing the configuration below in your docker compose file requires that your re-run docker compose:
 
@@ -166,15 +166,15 @@ docker-compose -p radixdlt -f basic-node.yml up -d
 
 ### WIPE_ADMIN_PASSWORD
 
-Setting this to `yes` and restarting your `core` service will wipe your local ledger and re-sync it from other nodes in the RadixDLT network.
+Setting this to `yes` and restarting the `nginx` service will wipe and regenerate the `admin` user's password.
 
 ### WIPE_LEDGER
 
-Setting this to `yes` and restarting your `core` service will wipe your local ledger and re-sync it from other nodes in the RadixDLT network.
+Setting this to `yes` and restarting the `core` service will wipe the local ledger and re-sync it from other nodes in the RadixDLT network.
 
 ### WIPE_NODE_KEY
 
-Setting this to `yes` and restarting your `core` service will wipe your `node.key` file, which is your RadixDLT identity on the network. Hence, you will get a new identity and probably end up in a different shard.
+Setting this to `yes` and restarting the `core` service will wipe the `node.key` file, which is your RadixDLT identity on the network. Hence, you will get a new identity and probably end up in a different shard.
 
 ### CORE_GOSSIP_PORT
 
