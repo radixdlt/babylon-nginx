@@ -3,6 +3,7 @@ services:
   core:
     image: radixdlt.azurecr.io/radixdlt/radixdlt-core:latest-alpha
     restart: unless-stopped
+    network_mode: "bridge"
     ports:
       - "20000:20000/tcp"
       - "20000:20000/udp"
@@ -24,6 +25,7 @@ services:
   nginx:
     image: radixdlt/radixdlt-nginx:latest-alpha
     restart: unless-stopped
+    network_mode: "bridge"
     ports:
       - "443:443"
     environment:
