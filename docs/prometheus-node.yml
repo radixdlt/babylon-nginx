@@ -1,4 +1,4 @@
-version: '3.2'
+version: '2'
 services:
   core:
     image: radixdlt.azurecr.io/radixdlt/radixdlt-core:latest-alpha
@@ -7,8 +7,6 @@ services:
       - "20000:20000/tcp"
       - "20000:20000/udp"
     environment:
-      WIPE_LEDGER: "no"
-      WIPE_NODE_KEY: "no"
       CORE_GOSSIP_PORT: 20000
       CORE_NETWORK_SEEDS:
       CORE_NETWORK_DISCOVERY_URLS: https://alphanet.radixdlt.com/node-finder
