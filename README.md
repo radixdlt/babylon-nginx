@@ -6,6 +6,7 @@
 
 * [Prometheus Metrics](docs/Metrics.md)
 * [Grafana Dashboards](docs/Grafana.md)
+* [Building Docker Images](docs/Docker.md)
 
 # Help
 

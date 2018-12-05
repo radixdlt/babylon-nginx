@@ -1,0 +1,207 @@
+user nginx;
+worker_processes 1;
+
+error_log /dev/stderr notice;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 8096;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    access_log /dev/stdout combined;
+
+    sendfile on;
+    #tcp_nopush on;
+
+    # https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    # https://gist.github.com/v0lkan/90fcb83c86918732b894
+    client_body_timeout 12;
+    client_header_timeout 12;
+    keepalive_timeout 15;
+    send_timeout 10;
+    # allow the server to close connection on non responding client, this will free up memory
+    reset_timedout_connection on;
+
+    #gzip  on;
+
+    resolver "$NGINX_RESOLVER";
+    resolver_timeout 600s; 
+
+    include conf.d/enable-tls.conf;
+
+    # configure proxy cache zones
+    proxy_cache_path /var/cache/nginx/radixdlt-hot levels=1:2 keys_zone=radixdlt_hot:1m max_size=100m inactive=60m use_temp_path=off;
+
+    # configure rate limit zones
+    include conf.d/enable-rate-limits.conf;
+    limit_req zone=perip burst=10 nodelay;
+    limit_req zone=perserver burst=20 nodelay;
+
+    server {
+        listen 443 ssl;
+        server_name localhost;
+
+        # Basic Auth
+        auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+        auth_basic on;
+
+        # Limit the request body size
+        client_max_body_size 10k;
+
+        # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
+        set ${DOLLAR}backend http://core:8080;
+
+        location /schemas/ {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 10s;
+            include conf.d/enable-cors.conf;
+        }
+
+        location /documentation/ {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 10s;
+            include conf.d/enable-cors.conf;
+        }
+
+        location /api/internal/ {
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+            include conf.d/enable-cors.conf;
+        }
+
+        location /api/network {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 1s;
+            include conf.d/enable-cors.conf;
+        }
+
+        location = /api/system {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 1s;
+            include conf.d/enable-cors.conf;
+        }
+
+        location = /api/universe {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 10s;
+            include conf.d/enable-cors.conf;
+        }
+
+        location = /api/rtp {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 10s;
+            include conf.d/enable-cors.conf;
+        }
+
+        location /rpc {
+            auth_basic off;
+            # TODO: do we need to limit methods here? 
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-websocket.conf;
+            include conf.d/enable-cors.conf;
+        }
+
+        location /api/ {
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+            include conf.d/enable-cors.conf;
+        }
+
+        # prometheus graph, queries, etc is password protected
+        location /prometheus {
+            # Grafana make a bunch of requests when dashboard is refreshed
+            limit_req zone=perip burst=100 nodelay;
+            auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
+            limit_except GET {
+                deny all;
+            }
+            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
+            set ${DOLLAR}backend http://prometheus:9090;
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+            include conf.d/enable-cors.conf;
+        }
+
+        location /metrics {
+            auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
+            set ${DOLLAR}backend http://exporter:9099;
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+            include conf.d/enable-cors.conf;
+        }
+
+        include conf.d/error-location.conf;
+        include conf.d/nginx-status-location.conf;
+    }
+}
+
+# http://nginx.org/en/docs/stream/ngx_stream_core_module.html
+# https://www.nginx.com/blog/tcp-load-balancing-udp-load-balancing-nginx-tips-tricks/#tlsTerminate
+# FIXME: Since the nginx component is not the default gateway the SYNACK takes the wrong route (default) route back
+# ... 104.45.7.174.49054 > 172.19.0.2.30000: Flags [S], seq 611427508, win 29200, options [mss 1460,sackOK,TS val 3742784 ecr 0,nop,wscale 7], length 0
+# ... 172.19.0.2.30000 > 104.45.7.174.49054: Flags [S.], seq 3714921919, ack 611427509, win 28960, options [mss 1460,sackOK,TS val 3742784 ecr 3742784,nop,wscale 1], length 0
+# Either of the following solutions should fix the problem:
+# 1. nginx needs to be the default route - might not be possible cleanly with docker ...
+# 2. change gossip proto to tell the node what the real peer address is
+#stream {
+#    # transparent reverse proxy (spoof source IP for the core)
+#    proxy_bind ${DOLLAR}remote_addr transparent;
+#    server {
+#        listen 8000;
+#        proxy_pass "core:$CORE_GOSSIP_PORT";
+#    }
+#    server {
+#        listen 8000 udp;
+#        proxy_pass "core:$CORE_GOSSIP_PORT";
+#    }
+#}
