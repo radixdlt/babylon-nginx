@@ -37,4 +37,9 @@ if [ $max_mb -gt 4096 ]; then
     export JAVA_OPTS="-Xmx$(($max_mb - 2560))m $JAVA_OPTS"
 fi
 
+# load iptables
+if [ -f /sbin/iptables-restore ]; then
+iptables-restore < /etc/iptables_restore/iptables.rules
+fi
+
 exec "$@"
