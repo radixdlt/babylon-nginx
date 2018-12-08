@@ -20,7 +20,7 @@ services:
         max-size: "10m"
         max-file: "30"
   nginx:
-    image: radixdlt/radixdlt-nginx:latest-alpha
+    image: radixdlt/radixdlt-nginx:1.14-alpine
     restart: unless-stopped
     ports:
       - "443:443"
