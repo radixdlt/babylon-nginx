@@ -2,13 +2,15 @@ ARG ARCH=amd64
 FROM $ARCH/alpine:3.8
 LABEL maintainer="devops@radixdlt.com"
 
-RUN apk --no-cache --update add openjdk8 libc6-compat
+RUN apk --no-cache --update add openjdk8 libc6-compat iptables su-exec
 
 COPY docker-healthcheck.sh /
 HEALTHCHECK CMD sh /docker-healthcheck.sh
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
+
+COPY iptables.rules /etc/iptables/
 
 # start process as unprivileged user radixdlt
 CMD ["/opt/radixdlt/bin/radixdlt", "--config", "./etc/default.config"]
@@ -29,4 +31,3 @@ RUN addgroup -S radix && \
 VOLUME ["/opt/radixdlt/RADIXDB", "/opt/radixdlt/etc"]
 
 WORKDIR /opt/radixdlt
-USER radix
