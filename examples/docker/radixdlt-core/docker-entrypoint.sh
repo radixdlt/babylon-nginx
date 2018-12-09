@@ -38,8 +38,6 @@ if [ $max_mb -gt 4096 ]; then
 fi
 
 # load iptables
-if [ -f /sbin/iptables-restore ]; then
-iptables-restore < /etc/iptables_restore/iptables.rules
-fi
+/sbin/iptables-restore < /etc/iptables/iptables.rules
 
 exec "$@"
