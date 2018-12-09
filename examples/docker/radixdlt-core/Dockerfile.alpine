@@ -2,13 +2,16 @@ ARG ARCH=amd64
 FROM $ARCH/alpine:3.8
 LABEL maintainer="devops@radixdlt.com"
 
-RUN apk --no-cache --update add openjdk8 libc6-compat
+RUN apk --no-cache --update add openjdk8 libc6-compat iptables
 
 COPY docker-healthcheck.sh /
 HEALTHCHECK CMD sh /docker-healthcheck.sh
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
+
+RUN mkdir /etc/iptables_restore
+COPY iptables.rules /etc/iptables_restore
 
 # start process as unprivileged user radixdlt
 CMD ["/opt/radixdlt/bin/radixdlt", "--config", "./etc/default.config"]

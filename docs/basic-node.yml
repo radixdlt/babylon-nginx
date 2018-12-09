@@ -19,6 +19,8 @@ services:
       options:
         max-size: "10m"
         max-file: "30"
+    cap_add:
+      - NET_ADMIN
   nginx:
     image: radixdlt/radixdlt-nginx:1.14-alpine
     restart: unless-stopped
@@ -36,4 +38,3 @@ volumes:
   core_ledger:
   core_config:
   nginx_secrets:
-

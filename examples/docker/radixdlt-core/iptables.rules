@@ -1,0 +1,21 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:RATE-LIMIT - [0:0]
+# define a explicit rule for 20000 udp/tcp because it is possible that there are much more requests on the http-api
+-A INPUT -m conntrack -p tcp --dport 20000 --ctstate NEW -j RATE-LIMIT
+-A INPUT -m conntrack -p udp --dport 20000 --ctstate NEW -j RATE-LIMIT
+-A RATE-LIMIT -m hashlimit --hashlimit-upto 500/sec --hashlimit-burst 500 --hashlimit-name DOS --hashlimit-htable-size 16348 --hashlimit-htable-max 16348 --hashlimit-htable-gcinterval 3000 --hashlimit-htable-expire 300000 -j ACCEPT
+# logging does not work now because kernel prevent logging from container (other netfilter namespace.. should fix in kernel verison higher 4.11) alternative use NFLOG (or ULOG) rules instead of LOG rules
+# if there are packages dropped we can log this in two ways jump LOG/ULOG/NFLOG must be specified before log-prefix
+# every time
+# -A RATE-LIMIT -j LOG --log-prefix "IPTables-Rejected: "
+# only if there are more then 5 per second
+# -A RATE-LIMIT -m limit --limit 5/sec -j LOG --log-prefix "IPTables-Rejected: "
+# silently drop or
+-A RATE-LIMIT -j DROP
+# reject with icmp unreachable
+# -A RATE-LIMIT -j REJECT --reject-with icmp-port-unreachable
+COMMIT
+
