@@ -40,4 +40,4 @@ fi
 # load iptables
 /sbin/iptables-restore < /etc/iptables/iptables.rules
 
-exec "$@"
+exec /sbin/su-exec radix:radix "$@"
