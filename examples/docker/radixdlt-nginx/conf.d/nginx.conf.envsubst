@@ -167,8 +167,7 @@ http {
             include conf.d/enable-cors.conf;
         }
 
-        location /metrics {
-            auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
+        location = /metrics {
             auth_basic off;
             limit_except GET {
                 deny all;
@@ -180,28 +179,31 @@ http {
             include conf.d/enable-cors.conf;
         }
 
+        location = /metrics/log {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
+            set ${DOLLAR}backend http://logger:9178/metrics;
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+            include conf.d/enable-cors.conf;
+        }
+
+        location = /challenge {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
+            set ${DOLLAR}backend http://nns:8080;
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+        }
+
         include conf.d/error-location.conf;
         include conf.d/nginx-status-location.conf;
     }
 }
 
-# http://nginx.org/en/docs/stream/ngx_stream_core_module.html
-# https://www.nginx.com/blog/tcp-load-balancing-udp-load-balancing-nginx-tips-tricks/#tlsTerminate
-# FIXME: Since the nginx component is not the default gateway the SYNACK takes the wrong route (default) route back
-# ... 104.45.7.174.49054 > 172.19.0.2.30000: Flags [S], seq 611427508, win 29200, options [mss 1460,sackOK,TS val 3742784 ecr 0,nop,wscale 7], length 0
-# ... 172.19.0.2.30000 > 104.45.7.174.49054: Flags [S.], seq 3714921919, ack 611427509, win 28960, options [mss 1460,sackOK,TS val 3742784 ecr 3742784,nop,wscale 1], length 0
-# Either of the following solutions should fix the problem:
-# 1. nginx needs to be the default route - might not be possible cleanly with docker ...
-# 2. change gossip proto to tell the node what the real peer address is
-#stream {
-#    # transparent reverse proxy (spoof source IP for the core)
-#    proxy_bind ${DOLLAR}remote_addr transparent;
-#    server {
-#        listen 8000;
-#        proxy_pass "core:$CORE_GOSSIP_PORT";
-#    }
-#    server {
-#        listen 8000 udp;
-#        proxy_pass "core:$CORE_GOSSIP_PORT";
-#    }
-#}
