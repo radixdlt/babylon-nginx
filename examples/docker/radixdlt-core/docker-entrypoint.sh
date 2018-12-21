@@ -38,6 +38,9 @@ if [ $max_mb -gt 4096 ]; then
 fi
 
 # load iptables
-/sbin/iptables-restore < /etc/iptables/iptables.rules
+# TODO: Need to tweak and test this some more before we can enable it in a public network.
+if [ "$ENABLE_IPTABLES_RULES" = yes ]; then
+    /sbin/iptables-restore < /etc/iptables/iptables.rules
+fi
 
 exec /sbin/su-exec radix:radix "$@"

@@ -23,10 +23,10 @@ RUN addgroup -S radix && \
 # - mv: move to a version agnostic path
 # - mkdir: create volume dirs
 # - chown: make sure mutable dirs have the correct owner
-#ADD dist.tgz /opt/
-#RUN mv /opt/radixdlt-* /opt/radixdlt && \
-#    mkdir -p /opt/radixdlt/RADIXDB /opt/radixdlt/etc && \
-#    chown -R radix:radix /opt/radixdlt
+ADD dist.tgz /opt/
+RUN mv /opt/radixdlt-* /opt/radixdlt && \
+    mkdir -p /opt/radixdlt/RADIXDB /opt/radixdlt/etc && \
+    chown -R radix:radix /opt/radixdlt
 
 VOLUME ["/opt/radixdlt/RADIXDB", "/opt/radixdlt/etc"]
 

@@ -15,20 +15,20 @@ radixdlt-nginx-all-push radixdlt-core-all-push:
 	@$(MAKE) ARCH=amd64 TAG=$(TAG) BASE=$(BASE) $(subst -all,,$@)
 	@$(MAKE) ARCH=arm32v6 TAG=$(TAG) BASE=$(BASE) $(subst -all,,$@)
 	@$(MAKE) ARCH=arm64v8 TAG=$(TAG) BASE=$(BASE) $(subst -all,,$@)
-	docker manifest create --amend $(REGISTRY)/$(subst -all-push,,$@):$(TAG) \
-		radixdlt/$(subst -all-push,,$@):$(TAG)-amd64 \
-		radixdlt/$(subst -all-push,,$@):$(TAG)-arm32v6 \
-		radixdlt/$(subst -all-push,,$@):$(TAG)-arm64v8
-	docker manifest push --purge $(REGISTRY)/$(subst -all-push,,$@):$(TAG)
+	docker manifest create --amend $(REGISTRY)/radixdlt/$(subst -all-push,,$@):$(TAG) \
+		$(REGISTRY)/radixdlt/$(subst -all-push,,$@):$(TAG)-amd64 \
+		$(REGISTRY)/radixdlt/$(subst -all-push,,$@):$(TAG)-arm32v6 \
+		$(REGISTRY)/radixdlt/$(subst -all-push,,$@):$(TAG)-arm64v8
+	docker manifest push --purge $(REGISTRY)/radixdlt/$(subst -all-push,,$@):$(TAG)
 
 .PHONY: radixdlt-nginx radixdlt-core
 radixdlt-nginx radixdlt-core:
 	docker build \
-		-t radixdlt/$@:$(TAG)-$(ARCH) \
+		-t $(REGISTRY)/radixdlt/$@:$(TAG)-$(ARCH) \
 		--build-arg ARCH=$(ARCH) \
 		-f $@/Dockerfile.$(BASE) \
 		./$@
 
 .PHONY: radixdlt-nginx-push radixdlt-core-push
 radixdlt-nginx-push radixdlt-core-push:
-	docker push $(REGISTRY)/$(subst -push,,$@):$(TAG)-$(ARCH)
+	docker push $(REGISTRY)/radixdlt/$(subst -push,,$@):$(TAG)-$(ARCH)
