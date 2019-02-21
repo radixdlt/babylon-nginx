@@ -1,7 +1,7 @@
 ARCH ?= amd64
 TAG ?= latest
 BASE ?= alpine
-REGISTRY ?= radixdlt
+REGISTRY ?= docker.io
 
 .PHONY: radixdlt-nginx-all radixdlt-core-all
 radixdlt-nginx-all radixdlt-core-all:
