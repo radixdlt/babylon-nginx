@@ -7,6 +7,7 @@ cat >./etc/default.config <<EOF
 api.url=/api
 core.modules=assets,atoms,transactions
 cp.port=8080
+network.discovery.allow_tls_bypass=${CORE_NETWORK_ALLOW_TLS_BYPASS:-0}
 network.discovery.urls=$CORE_NETWORK_DISCOVERY_URLS
 network.seeds=$CORE_NETWORK_SEEDS
 ntp=true
@@ -31,10 +32,10 @@ if [ "$WIPE_NODE_KEY" = yes ]; then
     rm -f ./etc/node.key
 fi
 
-# use more mem - leave some for system and other apps
-max_mb=$(free -m | awk '$1 == "Mem:" { print $7}')
+# leave 2GB for the the system - alloc the rest for the java process
+max_mb=$(free -m | awk '$1 == "Mem:" { print $2}')
 if [ $max_mb -gt 4096 ]; then
-    export JAVA_OPTS="-Xmx$(($max_mb - 2560))m $JAVA_OPTS"
+    export JAVA_OPTS="-Xmx$(($max_mb - 2048))m $JAVA_OPTS"
 fi
 
 # load iptables
