@@ -18,6 +18,8 @@ universe.lurking=${CORE_UNIVERSE_LURKING:-0}
 universe.witness=${CORE_UNIVERSE_WITNESS:-0}
 universe.witnesses=$CORE_UNIVERSE_WITNESSES
 node.key.path=./etc/node.key
+# NOTE: keep this disabled on a public network otherwise your node will get DoS attacked
+spamathon.enabled=${CORE_SPAMATHON_ENABLED:-false}
 EOF
 
 # make sure that the data partition has correct owner
