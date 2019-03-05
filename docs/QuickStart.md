@@ -202,6 +202,13 @@ For the Alpha network is partitioned into `1` shards.
 
 Universe identity and properties (such as gossip port). This string separates two RadixDLT networks from each other.
 
+### CORE_SECURE_RANDOM_SOURCE
+
+Secure random number device used by the JVM. The default device is [/dev/urandom](https://linux.die.net/man/4/urandom).
+However, power users might want to swith to `/dev/random`, in which case a decent a entropy generator side-car container
+is needed (e.g [haveged](https://linux.die.net/man/8/haveged)).
+**NOTE**: Switching to `/dev/random` without an decent entropy generator might cause unexpected periodical stalls (hanging).
+
 # To Be Decided (TBD)
 
 * Number of shards `CORE_PARTITION_FRAGMENTS`
