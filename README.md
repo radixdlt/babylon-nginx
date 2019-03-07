@@ -4,7 +4,7 @@ This repo contains a bunch of configuration files needed for running RadixCore n
 We are leveraging [docker](https://www.docker.com/) technology to abstract away the operative system and hardware
 (lite-virtualisation) so that the same Radix Core binary can run on many platforms.
 
-To get a better understanding please read the [Quick Start guide](https://github.com/radixdlt/docs/blob/master/node-runners/start/README.md) first.
+To get a better understanding please read the [Quick Start](https://docs.radixdlt.com/alpha/node-runners/start) pages in our Knowledge Base first.
 
 # File Organisation
 
@@ -19,4 +19,4 @@ To get a better understanding please read the [Quick Start guide](https://github
 
 # Contributions
 
-Are most welcome, although we realise that it is hard to contribute anything in the [radixdlt-core](docker/radix-core/Dockerfile.alpine) project without the non-disclosed [tarball](docker/radix-core/Dockerfile.alpine#L26).
+Are most welcome, although we realise that it is hard to contribute anything in the [radixdlt-core](docker/radixdlt-core/Dockerfile.alpine) project without the non-disclosed [tarball](docker/radixdlt-core/Dockerfile.alpine#L26).
