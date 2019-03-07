@@ -10,14 +10,12 @@ The following example is for building the `radixdlt-nginx` image although all im
 ## Build Image for ALL Architectures
 
 ```shell
-cd examples/docker
 make radixdlt-nginx-all
 ```
 
 ## Build Image for single Arch
 
 ```shell
-cd examples/docker
 make ARCH=amd64 radixdlt-nginx
 ```
 
@@ -26,6 +24,5 @@ make ARCH=amd64 radixdlt-nginx
 **NOTE**: You need to be logged into Dockerhub in order to do this.
 
 ```shell
-cd examples/docker
 make ARCH=amd64 radixdlt-nginx-all-push
 ```

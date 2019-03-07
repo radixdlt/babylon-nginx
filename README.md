@@ -1,14 +1,22 @@
-# Basic Topics
+# The node-runner project for RadixDLT Core
 
-* [Quick Start](docs/QuickStart.md)
+This repo contains a bunch of configuration files needed for running RadixCore nodes in a live networks.
+We are leveraging [docker](https://www.docker.com/) technology to abstract away the operative system and hardware
+(lite-virtualisation) so that the same Radix Core binary can run on many platforms.
 
-# Advanced Topics
+To get a better understanding please read the [Quick Start guide](https://github.com/radixdlt/docs/blob/master/node-runners/start/README.md) first.
 
-* [Prometheus Metrics](docs/Metrics.md)
-* [Grafana Dashboards](docs/Grafana.md)
-* [Building Docker Images](docs/Docker.md)
+# File Organisation
 
-# Help
+* [docker/](docker/) contains Dockerfile and resources needed to build and publish our docker images
+* [docker-compose/](docker-compose/) contains the docker-compose.yml files needed to run a complete RadixCore node system.
 
-* [FAQ](docs/FAQ.md)
-* [#node-runner](https://discord.gg/Nbehsu) on Discord
+# Roadmap
+
+1. Alphanet2 support
+2. Betanet support
+3. iptables/eBPF support for L3/L4 filtering
+
+# Contributions
+
+Are most welcome, although we realise that it is hard to contribute anything in the [radixdlt-core](docker/radix-core/Dockerfile.alpine) project without the non-disclosed [tarball](docker/radix-core/Dockerfile.alpine#L26).
