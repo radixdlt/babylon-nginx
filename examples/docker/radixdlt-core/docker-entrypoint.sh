@@ -4,7 +4,7 @@ set -e
 
 # Loosing entropy requirements to avoid blocking based on the the /dev/urandom manpage: https://linux.die.net/man/4/urandom
 # ... "as a general rule, /dev/urandom should be used for everything except long-lived GPG/SSL/SSH keys" ...
-find /usr/lib/jvm -type f -name java.security | xargs sed -i "s#securerandom.source=file:.*#securerandom.source=file:${CORE_SECURE_RANDOM_SOURCE:-/dev/urandom}#g"
+find /usr/lib/jvm -type f -name java.security | xargs sed -i "s#^\s*securerandom.source=file:.*#securerandom.source=file:${CORE_SECURE_RANDOM_SOURCE:-/dev/urandom}#g"
 
 # apply templating
 cat >./etc/default.config <<EOF
