@@ -40,8 +40,14 @@ fi
 
 # leave 2GB for the the system - alloc the rest for the java process
 max_mb=$(free -m | awk '$1 == "Mem:" { print $2}')
-if [ $max_mb -gt 4096 ]; then
+if [ $max_mb -gt 6144 ]; then
     export JAVA_OPTS="-Xmx$(($max_mb - 2048))m $JAVA_OPTS"
+elif [ $max_mb -gt 4096 ]; then
+    export JAVA_OPTS="-Xmx$(($max_mb - 1536))m $JAVA_OPTS"
+elif [ $max_mb -gt 3072 ]; then
+    export JAVA_OPTS="-Xmx$(($max_mb - 512))m $JAVA_OPTS"
+else # JVM need at least 3GB Heap - 2GB will run with the occasional OutOfMemoryException
+    export JAVA_OPTS="-Xmx2048m $JAVA_OPTS"
 fi
 
 # load iptables
