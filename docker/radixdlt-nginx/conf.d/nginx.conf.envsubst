@@ -197,7 +197,7 @@ http {
                 deny all;                                                                                                   
             }                                                                                                               
             set ${DOLLAR}backend faucet;
-            proxy_pass http://${DOLLAR}backend/${DOLLAR}1;                                                                            
+            proxy_pass http://${DOLLAR}backend:8079/${DOLLAR}1;                                                                          
             include conf.d/enable-proxy.conf;                                                                               
             include conf.d/enable-cors.conf;                                                                                
         }   
