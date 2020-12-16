@@ -190,13 +190,13 @@ http {
             include conf.d/enable-cors.conf;
         }
 
-        location /faucet {
+        location /faucet/ {
             limit_req zone=perip burst=100 nodelay;
             auth_basic off;
             limit_except GET {
                 deny all;
             }
-            set ${DOLLAR}backend http://faucet:8079;
+            set ${DOLLAR}backend http://faucet:8079/;
             proxy_pass ${DOLLAR}backend;
             include conf.d/enable-proxy.conf;
             include conf.d/enable-cors.conf;
