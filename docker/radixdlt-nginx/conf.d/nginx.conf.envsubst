@@ -195,8 +195,9 @@ http {
             auth_basic off;                                                                                                 
             limit_except GET {                                                                                              
                 deny all;                                                                                                   
-            }                                                                                                               
-            proxy_pass http://faucet:8079;                                                                                 
+            }       
+            set ${DOLLAR}backend http://faucet:8079;
+            proxy_pass ${DOLLAR}backend;
             include conf.d/enable-proxy.conf;                                                                               
             include conf.d/enable-cors.conf;                                                                                
         }  
