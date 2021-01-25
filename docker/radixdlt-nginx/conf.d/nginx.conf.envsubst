@@ -123,6 +123,29 @@ http {
             include conf.d/enable-cors.conf;
         }
 
+        location /api/ping  {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 1s;
+            include conf.d/enable-cors.conf;
+        }
+        location ~ ^/api/vertices/(committed|highestqc)$  {
+            auth_basic off;
+            limit_except GET {
+                deny all;
+            }
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-caching-proxy.conf;
+            proxy_cache radixdlt_hot;
+            proxy_cache_valid 200 1s;
+            include conf.d/enable-cors.conf;
+        }
+
         location /api/rtp {
             auth_basic off;
             limit_except GET {
@@ -166,6 +189,18 @@ http {
             include conf.d/enable-proxy.conf;
             include conf.d/enable-cors.conf;
         }
+
+        location ~ ^/faucet/(.*)$ {                                                                                         
+            limit_req zone=perip burst=100 nodelay;                                                                         
+            auth_basic off;                                                                                                 
+            limit_except GET {                                                                                              
+                deny all;                                                                                                   
+            }                                                                                                               
+            set ${DOLLAR}backend faucet;
+            proxy_pass http://${DOLLAR}backend:8079/${DOLLAR}1;                                                                          
+            include conf.d/enable-proxy.conf;                                                                               
+            include conf.d/enable-cors.conf;                                                                                
+        }   
 
         location = /metrics {
             auth_basic off;
