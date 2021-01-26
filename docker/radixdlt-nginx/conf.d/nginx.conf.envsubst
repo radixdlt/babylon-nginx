@@ -11,8 +11,8 @@ events {
 stream {
     server {
         listen 30000;
-        set ${dollar}upstream core:30000;
-        proxy_pass ${dollar}upstream;
+        set ${dollar}backend core:30000;
+        proxy_pass ${dollar}backend;
     }
 }
 
