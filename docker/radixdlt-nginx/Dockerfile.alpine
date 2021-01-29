@@ -1,5 +1,5 @@
 ARG ARCH=amd64
-FROM $ARCH/nginx:1.14-alpine
+FROM $ARCH/nginx:1.19-alpine
 LABEL maintainer="devops@radixdlt.com"
 
 RUN apk add --no-cache --update libressl wget
