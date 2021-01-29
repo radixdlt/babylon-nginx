@@ -9,6 +9,8 @@ events {
 }
 
 stream {
+    resolver "$NGINX_RESOLVER";
+    resolver_timeout 600s;
     server {
         listen 30000;
         set ${DOLLAR}backend core:30000;
