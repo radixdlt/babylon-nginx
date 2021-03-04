@@ -180,7 +180,7 @@ http {
             include conf.d/enable-cors.conf;
         }
 
-        location /node/validator {
+        location /node {
             limit_except GET POST {
                 deny all;
             }
