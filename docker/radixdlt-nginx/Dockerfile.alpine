@@ -4,9 +4,6 @@ LABEL maintainer="devops@radixdlt.com"
 
 RUN apk add --no-cache --update libressl wget openssl
 
-# set default environment variables
-ENV RADIXDLT_FAUCET_ENABLED=false
-
 # good idea to persist this
 VOLUME ["/etc/nginx/secrets"]
 
