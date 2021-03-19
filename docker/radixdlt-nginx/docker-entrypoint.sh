@@ -6,10 +6,10 @@ set -e
 
 if [[ "$RADIXDLT_ENABLE_FAUCET" == true ]];then
   export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
 
-export DOLLAR='$'
-envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
+DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
 
 # Generate dhparam.pem if not pre-configured
 if [ ! -f /etc/nginx/secrets/dhparam.pem ]; then
