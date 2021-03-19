@@ -5,7 +5,7 @@ set -e
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
 
 if [[ "$RADIXDLT_ENABLE_FAUCET" == true ]];then
-  export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf"
+  export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
 fi
 
 export DOLLAR='$'
