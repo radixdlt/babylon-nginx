@@ -12,9 +12,8 @@ stream {
     resolver "$NGINX_RESOLVER";
     resolver_timeout 600s;
     server {
-        listen 30000;
-        set ${DOLLAR}backend core:30000;
-        proxy_pass ${DOLLAR}backend;
+        listen $NGINX_VALIDATOR_TCP_PORT;
+        proxy_pass $RADIXDLT_VALIDATOR_HOST:$RADIXDLT_VALIDATOR_TCP_PORT;;
     }
 }
 
@@ -63,7 +62,7 @@ http {
         client_max_body_size 10k;
 
         # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-        set ${DOLLAR}backend http://core:8080;
+        set ${DOLLAR}backend http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_VALIDATOR_HTTP_PORT;
 
         location /schemas/ {
             auth_basic off;
@@ -217,7 +216,7 @@ http {
                 deny all;
             }
             # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://prometheus:9090;
+            set ${DOLLAR}backend http://$RADIXDLT_PROMETHEUS_PORT:$RADIXDLT_PROMETHEUS_PORT;
             proxy_pass ${DOLLAR}backend;
             include conf.d/enable-proxy.conf;
             include conf.d/enable-cors.conf;
@@ -228,33 +227,10 @@ http {
                 deny all;
             }
             # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://exporter:9099;
+            set ${DOLLAR}backend http://$RADIXDLT_METRICS_EXPORTER_HOST:$RADIXDLT_METRICS_EXPORTER_PORT;
             proxy_pass ${DOLLAR}backend;
             include conf.d/enable-proxy.conf;
             include conf.d/enable-cors.conf;
-        }
-
-        location = /metrics/log {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://logger:9178/metrics;
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-proxy.conf;
-            include conf.d/enable-cors.conf;
-        }
-
-        location = /challenge {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://nns:8080;
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-proxy.conf;
         }
 
         include conf.d/error-location.conf;
