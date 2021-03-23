@@ -1,7 +1,7 @@
 user nginx;
 worker_processes 1;
 
-error_log /dev/stderr notice;
+error_log stderr notice;
 pid /var/run/nginx.pid;
 
 events {
@@ -21,7 +21,7 @@ stream {
 http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
-    access_log /dev/stdout combined;
+    access_log stdout combined;
 
     sendfile on;
     #tcp_nopush on;
