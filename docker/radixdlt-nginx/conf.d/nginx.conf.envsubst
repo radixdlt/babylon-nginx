@@ -190,6 +190,21 @@ http {
             include conf.d/enable-cors.conf;
         }
 
+        # prometheus graph, queries, etc is password protected
+        location /prometheus {
+            # Grafana make a bunch of requests when dashboard is refreshed
+            limit_req zone=perip burst=100 nodelay;
+            auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
+            limit_except GET {
+                deny all;
+            }
+            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
+            set ${DOLLAR}backend http://prometheus:9090;
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+            include conf.d/enable-cors.conf;
+        }
+
         location /rpc {
             auth_basic off;
             # TODO: do we need to limit methods here? 
