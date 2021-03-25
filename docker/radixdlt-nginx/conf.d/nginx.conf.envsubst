@@ -1,7 +1,7 @@
 user nginx;
 worker_processes 1;
 
-error_log /dev/stderr notice;
+error_log stderr notice;
 pid /var/run/nginx.pid;
 
 events {
@@ -12,9 +12,8 @@ stream {
     resolver "$NGINX_RESOLVER";
     resolver_timeout 600s;
     server {
-        listen 30000;
-        set ${DOLLAR}backend core:30000;
-        proxy_pass ${DOLLAR}backend;
+        listen $NGINX_VALIDATOR_TCP_PORT;
+        proxy_pass $RADIXDLT_VALIDATOR_HOST:$RADIXDLT_VALIDATOR_TCP_PORT;
     }
 }
 
@@ -22,7 +21,7 @@ stream {
 http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
-    access_log /dev/stdout combined;
+    access_log stdout combined;
 
     sendfile on;
     #tcp_nopush on;
@@ -63,7 +62,7 @@ http {
         client_max_body_size 10k;
 
         # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-        set ${DOLLAR}backend http://core:8080;
+        set ${DOLLAR}backend http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_VALIDATOR_HTTP_PORT;
 
         location /schemas/ {
             auth_basic off;
@@ -191,6 +190,21 @@ http {
             include conf.d/enable-cors.conf;
         }
 
+        # prometheus graph, queries, etc is password protected
+        location /prometheus {
+            # Grafana make a bunch of requests when dashboard is refreshed
+            limit_req zone=perip burst=100 nodelay;
+            auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
+            limit_except GET {
+                deny all;
+            }
+            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
+            set ${DOLLAR}backend http://prometheus:9090;
+            proxy_pass ${DOLLAR}backend;
+            include conf.d/enable-proxy.conf;
+            include conf.d/enable-cors.conf;
+        }
+
         location /rpc {
             auth_basic off;
             # TODO: do we need to limit methods here? 
@@ -208,70 +222,21 @@ http {
             include conf.d/enable-cors.conf;
         }
 
-        # prometheus graph, queries, etc is password protected
-        location /prometheus {
-            # Grafana make a bunch of requests when dashboard is refreshed
-            limit_req zone=perip burst=100 nodelay;
-            auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
-            limit_except GET {
-                deny all;
-            }
-            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://prometheus:9090;
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-proxy.conf;
-            include conf.d/enable-cors.conf;
-        }
-
-        location ~ ^/faucet/(.*)$ {                                                                                         
-            limit_req zone=perip burst=100 nodelay;                                                                         
-            auth_basic off;                                                                                                 
-            limit_except GET {                                                                                              
-                deny all;                                                                                                   
-            }                                                                                                               
-            set ${DOLLAR}backend faucet;
-            proxy_pass http://${DOLLAR}backend:8079/${DOLLAR}1;                                                                          
-            include conf.d/enable-proxy.conf;                                                                               
-            include conf.d/enable-cors.conf;                                                                                
-        }   
-
         location = /metrics {
             auth_basic off;
             limit_except GET {
                 deny all;
             }
             # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://exporter:9099;
+            set ${DOLLAR}backend http://$RADIXDLT_METRICS_EXPORTER_HOST:$RADIXDLT_METRICS_EXPORTER_PORT;
             proxy_pass ${DOLLAR}backend;
             include conf.d/enable-proxy.conf;
             include conf.d/enable-cors.conf;
-        }
-
-        location = /metrics/log {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://logger:9178/metrics;
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-proxy.conf;
-            include conf.d/enable-cors.conf;
-        }
-
-        location = /challenge {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-            set ${DOLLAR}backend http://nns:8080;
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-proxy.conf;
         }
 
         include conf.d/error-location.conf;
         include conf.d/nginx-status-location.conf;
+        ${INCLUDE_RADIXDLT_FAUCET_ENABLED}
     }
 }
 

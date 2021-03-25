@@ -4,7 +4,20 @@ set -e
 
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
 
-DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf 
+[ "$RADIXDLT_VALIDATOR_HOST" ] || export RADIXDLT_VALIDATOR_HOST=core
+[ "$RADIXDLT_VALIDATOR_TCP_PORT" ] || export RADIXDLT_VALIDATOR_TCP_PORT=30000
+[ "$RADIXDLT_VALIDATOR_HTTP_PORT" ] || export RADIXDLT_VALIDATOR_HTTP_PORT=8080
+[ "$NGINX_VALIDATOR_TCP_PORT" ] || export NGINX_VALIDATOR_TCP_PORT=30000
+[ "$NGINX_VALIDATOR_HTTP_PORT" ] || export NGINX_VALIDATOR_HTTP_PORT=8080
+[ "$RADIXDLT_METRICS_EXPORTER_HOST" ] || export RADIXDLT_METRICS_EXPORTER_HOST=exporter
+[ "$RADIXDLT_METRICS_EXPORTER_PORT" ] || export RADIXDLT_METRICS_EXPORTER_PORT=9099
+
+if [[ "$RADIXDLT_ENABLE_FAUCET" == true ]];then
+  export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
+fi
+
+DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
 
 # Generate dhparam.pem if not pre-configured
 if [ ! -f /etc/nginx/secrets/dhparam.pem ]; then

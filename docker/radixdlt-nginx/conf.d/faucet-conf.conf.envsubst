@@ -1,0 +1,11 @@
+location /faucet/request {
+    limit_req zone=perip burst=100 nodelay;
+    auth_basic "off";
+    limit_except GET POST {
+        deny all;
+    }
+
+    proxy_pass ${DOLLAR}backend;
+    include conf.d/enable-proxy.conf;
+    include conf.d/enable-cors.conf;
+}
