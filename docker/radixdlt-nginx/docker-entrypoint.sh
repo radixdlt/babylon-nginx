@@ -12,7 +12,7 @@ set -e
 [ "$RADIXDLT_METRICS_EXPORTER_HOST" ] || export RADIXDLT_METRICS_EXPORTER_HOST=exporter
 [ "$RADIXDLT_METRICS_EXPORTER_PORT" ] || export RADIXDLT_METRICS_EXPORTER_PORT=9099
 
-if [[ "$RADIXDLT_ENABLE_FAUCET" == true ]];then
+if [[ "$RADIXDLT_ENABLE_FAUCET" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]];then
   export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
