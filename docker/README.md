@@ -26,3 +26,6 @@ make ARCH=amd64 radixdlt-nginx
 ```shell
 make ARCH=amd64 radixdlt-nginx-all-push
 ```
+
+## Versions
+Make sure you create a Docker image tag for a semver version

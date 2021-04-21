@@ -17,6 +17,11 @@ if [[ "$RADIXDLT_ENABLE_FAUCET" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]
   DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
 
+if [[ "$RADIXDLT_ENABLE_API" == true || "$RADIXDLT_ENABLE_API" == "True" ]];then
+  export INCLUDE_RADIXDLT_ENABLE_API="include conf.d/api-conf.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
+fi
+
 DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
 
 # Generate dhparam.pem if not pre-configured

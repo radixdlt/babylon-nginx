@@ -64,142 +64,6 @@ http {
         # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
         set ${DOLLAR}backend http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_VALIDATOR_HTTP_PORT;
 
-        location /schemas/ {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 10s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /documentation/ {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 10s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /api/internal/ {
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-proxy.conf;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /api/network {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 1s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location = /api/system {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 1s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location = /api/universe {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 10s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /api/ping  {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 1s;
-            include conf.d/enable-cors.conf;
-        }
-        location ~ ^/api/vertices/(committed|highestqc)$  {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 1s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /api/rtp {
-            auth_basic off;
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 10s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /api/chaos {
-            limit_except GET PUT {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 10s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /node {
-            limit_except GET POST {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 10s;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /construction {
-            limit_except POST {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-caching-proxy.conf;
-            proxy_cache radixdlt_hot;
-            proxy_cache_valid 200 10s;
-            include conf.d/enable-cors.conf;
-        }
 
         # prometheus graph, queries, etc is password protected
         location /prometheus {
@@ -216,22 +80,6 @@ http {
             include conf.d/enable-cors.conf;
         }
 
-        location /rpc {
-            auth_basic off;
-            # TODO: do we need to limit methods here? 
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-websocket.conf;
-            include conf.d/enable-cors.conf;
-        }
-
-        location /api/ {
-            limit_except GET {
-                deny all;
-            }
-            proxy_pass ${DOLLAR}backend;
-            include conf.d/enable-proxy.conf;
-            include conf.d/enable-cors.conf;
-        }
 
         location = /metrics {
             auth_basic off;
@@ -248,6 +96,7 @@ http {
         include conf.d/error-location.conf;
         include conf.d/nginx-status-location.conf;
         ${INCLUDE_RADIXDLT_FAUCET_ENABLED}
+        ${INCLUDE_RADIXDLT_ENABLE_API}
     }
 }
 
