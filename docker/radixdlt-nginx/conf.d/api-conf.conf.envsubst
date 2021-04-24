@@ -19,7 +19,7 @@ location /api/network {
     include conf.d/enable-cors.conf;
 }
 
-location = /api/system {
+location = /system/info {
     auth_basic off;
     limit_except GET {
         deny all;
@@ -31,7 +31,7 @@ location = /api/system {
     include conf.d/enable-cors.conf;
 }
 
-location = /api/universe {
+location = /system/checkpoints {
     auth_basic off;
     limit_except GET {
         deny all;
