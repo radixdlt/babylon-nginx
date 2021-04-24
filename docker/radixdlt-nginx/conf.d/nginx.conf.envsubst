@@ -47,7 +47,7 @@ http {
 
     # configure rate limit zones
     include conf.d/enable-rate-limits.conf;
-    limit_req zone=perip burst=10 nodelay;
+    limit_req zone=perip burst=20 nodelay;
     limit_req zone=perserver burst=20 nodelay;
 
     server {
