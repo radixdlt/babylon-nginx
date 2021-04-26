@@ -31,7 +31,7 @@ location /universe.json {
     include conf.d/enable-cors.conf;
 }
 
-location = /system {
+location /system {
     auth_basic off;
     limit_except GET {
         deny all;
