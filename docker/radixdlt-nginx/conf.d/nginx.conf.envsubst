@@ -62,7 +62,8 @@ http {
         client_max_body_size 10k;
 
         # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-        set ${DOLLAR}backend http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_VALIDATOR_HTTP_PORT;
+        set ${DOLLAR}clientAPI http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_CLIENT_HTTP_PORT;
+        set ${DOLLAR}node http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
 
         location = /metrics {
             auth_basic off;
@@ -79,7 +80,11 @@ http {
         include conf.d/error-location.conf;
         include conf.d/nginx-status-location.conf;
         ${INCLUDE_RADIXDLT_FAUCET_ENABLED}
-        ${INCLUDE_RADIXDLT_ENABLE_API}
+        ${INCLUDE_RADIXDLT_ENABLE_CLIENT_API}
+        ${INCLUDE_RADIXDLT_CHAOS_ENABLE}
+        ${INCLUDE_RADIXDLT_UNIVERSE_ENABLE}
+        ${INCLUDE_RADIXDLT_ENABLE_SYSTEM_API}
+        ${INCLUDE_RADIXDLT_ENABLE_NODE_API}
     }
 }
 

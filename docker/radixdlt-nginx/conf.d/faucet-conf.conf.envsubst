@@ -5,7 +5,7 @@ location /faucet/request {
         deny all;
     }
 
-    proxy_pass ${DOLLAR}backend;
+    proxy_pass ${DOLLAR}node;
     include conf.d/enable-proxy.conf;
     include conf.d/enable-cors.conf;
 }

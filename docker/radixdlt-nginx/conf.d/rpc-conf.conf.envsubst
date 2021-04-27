@@ -1,7 +1,7 @@
 location /rpc {
     auth_basic off;
     # TODO: do we need to limit methods here?
-    proxy_pass ${DOLLAR}backend;
+    proxy_pass ${DOLLAR}clientAPI;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
