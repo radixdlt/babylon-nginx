@@ -101,6 +101,7 @@ location /node {
 }
 
 location /rpc {
+    limit_req zone=perip burst=100 nodelay;
     auth_basic off;
     # TODO: do we need to limit methods here?
     proxy_pass ${DOLLAR}backend;
