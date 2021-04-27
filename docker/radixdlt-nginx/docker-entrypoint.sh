@@ -22,8 +22,9 @@ set -e
 [ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
 [ "$RADIXDLT_ENABLE_NODE_API" ] || export RADIXDLT_ENABLE_NODE_API=true
 
-if [[ "RADIXDLT_ENABLE_CLIENT_API" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]];then
-  export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
+
+if [[ "$RADIXDLT_ENABLE_FAUCET" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]];then
+  export INCLUDE_RADIXDLT_ENABLE_CLIENT_API="include conf.d/faucet-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
 
