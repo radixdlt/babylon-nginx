@@ -24,7 +24,7 @@ set -e
 
 
 if [[ "$RADIXDLT_ENABLE_FAUCET" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]];then
-  export INCLUDE_RADIXDLT_ENABLE_FAUCET="include conf.d/faucet-conf.conf;"
+  export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
 
