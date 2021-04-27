@@ -1,6 +1,6 @@
 location /rpc {
     auth_basic off;
-    # TODO: do we need to limit methods here?
+    limit_req zone=perip burst=100 nodelay;
     proxy_pass ${DOLLAR}clientAPI;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
