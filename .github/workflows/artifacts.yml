@@ -16,9 +16,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build project
+      - name: Generate artifacts
         run: |
-          bash generte_artifact.sh
+          bash generate_artifact.sh
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
