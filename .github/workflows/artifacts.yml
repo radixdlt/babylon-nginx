@@ -32,16 +32,17 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Print the version
+        run: echo ${{ steps.get_version.outputs.VERSION }}
       - name: Upload Archive Node Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: https://github.com/radixdlt/node-runner/releases/tag/${{ steps.get_version.outputs.VERSION }}
+          upload_url: "https://github.com/radixdlt/node-runner/releases/tag/${{ steps.get_version.outputs.VERSION }}"
           asset_path: ./radixdlt-nginx-archive-conf.zip
           asset_name: radixdlt-nginx-archive-conf.zip
           asset_content_type: application/zip
-          prerelease: false
       - name: Upload Full Node Release Asset
         uses: actions/upload-release-asset@v1
         env:
@@ -55,11 +56,6 @@ jobs:
     name: Build and publish Docker image
     runs-on: ubuntu-latest
     steps:
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: print the version
-        run: echo ${{ steps.get_version.outputs.VERSION }}
       - name: Login to Dockerhub
         uses: docker/login-action@v1
         with:
