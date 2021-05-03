@@ -23,7 +23,7 @@ for node_type in full_node archive_node;do
   sed -i "s|user nginx;|include \/etc\/nginx\/modules-enabled\/*.conf;|g" ${PWD}/$nginx_file_name
 
   if [[ "$node_type" == "full_node" ]]; then
-    zip -r radixdlt-nginx-fullnodes-conf.zip conf.d/ nginx-fullnode.conf
+    zip -r radixdlt-nginx-fullnode-conf.zip conf.d/ nginx-fullnode.conf
   elif [[ "$node_type" == "archive_node" ]]; then
     zip -r radixdlt-nginx-archive-conf.zip conf.d/ nginx-archive.conf
   fi
