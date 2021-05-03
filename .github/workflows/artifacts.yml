@@ -69,7 +69,7 @@ jobs:
               echo "NGINX_IMG_VERSION=$TAG" >> $GITHUB_ENV
           else
             echo "Merge to master"
-            echo "NGINX_IMG_VERSION=latest" >> $GITHUB_ENV
+            echo "NGINX_IMG_VERSION=latest-test" >> $GITHUB_ENV
           fi
       - name: Docker build and push
         uses: docker/build-push-action@v2
