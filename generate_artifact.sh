@@ -20,6 +20,11 @@ for node_type in full_node archive_node;do
   sed '1,/# nginx configuration/!d' docker-entrypoint.sh  | sed 's/\/etc\/nginx/${PWD}/g' | bash
   mv ${PWD}/nginx.conf ${PWD}/$nginx_file_name
   echo "include /etc/nginx/modules-enabled/*.conf;" >> ${PWD}/$nginx_file_name
+
+  if [[ "$node_type" == "full_node" ]]; then
+    zip -r radixdlt-nginx-fullnodes-conf.zip conf.d/ nginx-fullnode.conf
+  elif [[ "$node_type" == "archive_node" ]]; then
+    zip -r radixdlt-nginx-archive-conf.zip conf.d/ nginx-archive.conf
+  fi
 done
 
-zip radix-nginx-conf.zip conf.d/ nginx-archive.conf nginx-fullnode.conf
