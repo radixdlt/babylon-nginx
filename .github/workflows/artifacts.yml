@@ -19,22 +19,25 @@ jobs:
       - name: Generate artifacts
         run: |
           bash generate_artifact.sh
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.ref }}
+#          release_name: Release ${{ github.ref }}
+#          draft: false
+#          prerelease: false
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Upload Archive Node Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: https://github.com/radixdlt/node-runner/releases/tag/${{ steps.tag.outputs.result }}
           asset_path: ./radixdlt-nginx-archive-conf.zip
           asset_name: radixdlt-nginx-archive-conf.zip
           asset_content_type: application/zip
@@ -57,7 +60,7 @@ jobs:
         with:
           registry: eu.gcr.io
           username: _json_key
-          password: ${{ secrets.GCR_EU_DEV_JSON_KEY }}
+          password: ${{ secrets.DOCKERHUB_JSON_KEY }}
       - name: Set Environment Variables
         run: |
           if [[ "$GITHUB_REF" == *"refs/tags/v"* ]]; then
@@ -70,8 +73,8 @@ jobs:
           fi
       - name: Docker build and push
         uses: docker/build-push-action@v2
-        #radixdlt/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
+        #
         with:
           file: ./Dockerfile.alpine
           tags: |
-            eu.gcr.io/dev-container-repo/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
+            radixdlt/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
