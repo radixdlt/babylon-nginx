@@ -14,3 +14,8 @@ Will generate:
 * radixdlt-nginx-fullnode-conf.zip
 
 Both artifacts are published as part of the release
+
+## Release
+When a Github release is created:
+* Nginx configuration artifacts are added to the release
+* A Docker image with the release tag is pushed to radixdlt/radixdlt-nginx
