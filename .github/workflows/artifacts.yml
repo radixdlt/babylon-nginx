@@ -52,12 +52,12 @@ jobs:
     name: Build and publish Docker image
     runs-on: ubuntu-latest
     steps:
-#      - name: Login to GCR
-#        uses: docker/login-action@v1
-#        with:
-#          registry: eu.gcr.io
-#          username: _json_key
-#          password: ${{ secrets.GCR_EU_DEV_JSON_KEY }}
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1
+        with:
+          registry: eu.gcr.io
+          username: _json_key
+          password: ${{ secrets.GCR_EU_DEV_JSON_KEY }}
       - name: Set Environment Variables
         run: |
           if [[ "$GITHUB_REF" == *"refs/tags/v"* ]]; then
@@ -68,12 +68,10 @@ jobs:
             echo "Merge to master"
             echo "NGINX_IMG_VERSION=latest" >> $GITHUB_ENV
           fi
-      - name: Run docker
-        run: |
-          echo ${{ env.NGINX_IMG_VERSION }}
-#      - name: Docker build and push
-#        uses: docker/build-push-action@v2
-#        with:
-#          file: ./Dockerfile.alpine
-#          tags: |
-#            radixdlt/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
+      - name: Docker build and push
+        uses: docker/build-push-action@v2
+        #radixdlt/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
+        with:
+          file: ./Dockerfile.alpine
+          tags: |
+            eu.gcr.io/dev-container-repo/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
