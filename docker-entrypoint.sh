@@ -54,7 +54,7 @@ fi
 DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
 
 # nginx configuration
-# aaGenerate dhparam.pem if not pre-configured
+# Generate dhparam.pem if not pre-configured
 if [ ! -f /etc/nginx/secrets/dhparam.pem ]; then
     # TODO: increase to 2048 for Beta
     openssl dhparam -out /etc/nginx/secrets/dhparam.pem  1024
