@@ -1,0 +1,81 @@
+on:
+  push:
+    branches:
+      - nginx-config-artifact-generate
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Build artifacts
+
+jobs:
+  build:
+    name: Upload nginx configuration artifacts
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project
+        run: |
+          bash generte_artifact.sh
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Archive Node Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./radixdlt-nginx-archive-conf.zip
+          asset_name: radixdlt-nginx-archive-conf.zip
+          asset_content_type: application/zip
+          prerelease: false
+      - name: Upload Full Node Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./radixdlt-nginx-fullnode-conf.zip
+          asset_name: radixdlt-nginx-fullnode-conf.zip
+          asset_content_type: application/zip
+  docker:
+    name: Build and publish Docker image
+    runs-on: ubuntu-latest
+    steps:
+#      - name: Login to GCR
+#        uses: docker/login-action@v1
+#        with:
+#          registry: eu.gcr.io
+#          username: _json_key
+#          password: ${{ secrets.GCR_EU_DEV_JSON_KEY }}
+      - name: Set Environment Variables
+        run: |
+          if [[ "$GITHUB_REF" == *"refs/tags/v"* ]]; then
+              echo "Release $GITHUB_REF"
+              TAG=${GITHUB_REF/refs\/tags\//}
+              echo "NGINX_IMG_VERSION=$TAG" >> $GITHUB_ENV
+          else
+            echo "Merge to master"
+            echo "NGINX_IMG_VERSION=latest" >> $GITHUB_ENV
+          fi
+      - name: Run docker
+        run: |
+          echo ${{ env.NGINX_IMG_VERSION }}
+#      - name: Docker build and push
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: ./Dockerfile.alpine
+#          tags: |
+#            radixdlt/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
