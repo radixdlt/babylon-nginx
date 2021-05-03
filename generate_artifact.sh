@@ -27,5 +27,7 @@ for node_type in full_node archive_node;do
   elif [[ "$node_type" == "archive_node" ]]; then
     zip -r radixdlt-nginx-archive-conf.zip conf.d/ nginx-archive.conf
   fi
+  #Cleanup
+  rm nginx-archive.conf nginx-fullnode.conf
 done
 
