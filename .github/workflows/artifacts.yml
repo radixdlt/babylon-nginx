@@ -29,17 +29,17 @@ jobs:
 #          release_name: Release ${{ github.ref }}
 #          draft: false
 #          prerelease: false
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: Print the version
-        run: echo ${{ steps.get_version.outputs.VERSION }}
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Upload Archive Node Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: "https://github.com/radixdlt/node-runner/releases/tag/${{ steps.get_version.outputs.VERSION }}"
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./radixdlt-nginx-archive-conf.zip
           asset_name: radixdlt-nginx-archive-conf.zip
           asset_content_type: application/zip
