@@ -1,22 +1,21 @@
 # The node-runner project for RadixDLT Core
 
-This repo contains a bunch of configuration files needed for running RadixCore nodes in a live networks.
-We are leveraging [docker](https://www.docker.com/) technology to abstract away the operative system and hardware
-(lite-virtualisation) so that the same Radix Core binary can run on many platforms.
+This repo contains configuration files needed for running RadixDLT nodes using nginx as a reverse proxy.
 
-To get a better understanding please read the [Quick Start](https://docs.radixdlt.com/alpha/node-runners/start) pages in our Knowledge Base first.
+# Artifacts for standalone nginx 
+For node runners that do not want to use the radixdlt/radixdlt-nginx there is a script that will generate
+the configuration for Archive and Fullnodes.
 
-# File Organisation
+```shell
+bash generate_artifact.sh
+```
+Will generate:
+* radixdlt-nginx-archive-conf.zip
+* radixdlt-nginx-fullnode-conf.zip
 
-* [docker/](docker/) contains Dockerfile and resources needed to build and publish our docker images
-* [docker-compose/](docker-compose/) contains the docker-compose.yml files needed to run a complete RadixCore node system.
+Both artifacts are published as part of the release
 
-# Roadmap
-
-1. Alphanet2 support
-2. Betanet support
-3. iptables/eBPF support for L3/L4 filtering
-
-# Contributions
-
-Are most welcome, although we realise that it is hard to contribute anything in the [radixdlt-core](docker/radixdlt-core/Dockerfile.alpine) project without the non-disclosed [tarball](docker/radixdlt-core/Dockerfile.alpine#L26).
+## Release
+When a Github release is created:
+* Nginx configuration artifacts are added to the release
+* A Docker image with the release tag is pushed to radixdlt/radixdlt-nginx
