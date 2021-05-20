@@ -1,4 +1,4 @@
-location /api/chaos {
+location /chaos {
     limit_except GET PUT {
         deny all;
     }
