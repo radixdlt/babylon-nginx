@@ -1,4 +1,4 @@
-location /system {
+location /health {
     auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
     auth_basic on;
     limit_except GET {

@@ -15,41 +15,78 @@ set -e
 [ "$RADIXDLT_METRICS_EXPORTER_HOST" ] || export RADIXDLT_METRICS_EXPORTER_HOST=exporter
 [ "$RADIXDLT_METRICS_EXPORTER_PORT" ] || export RADIXDLT_METRICS_EXPORTER_PORT=9099
 
-[ "$RADIXDLT_ENABLE_CLIENT_API" ] || export RADIXDLT_CLIENT_API_PORT=false
-[ "$RADIXDLT_CHAOS_ENABLE" ] || export RADIXDLT_CHAOS_ENABLE=false
-[ "$RADIXDLT_UNIVERSE_ENABLE" ] || export RADIXDLT_UNIVERSE_ENABLE=false
+
+
 [ "$RADIXDLT_ENABLE_FAUCET" ] || export RADIXDLT_ENABLE_FAUCET=false
-[ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
-[ "$RADIXDLT_ENABLE_NODE_API" ] || export RADIXDLT_ENABLE_NODE_API=true
-
-
 if [[ "$RADIXDLT_ENABLE_FAUCET" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]];then
   export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
 
+[ "$RADIXDLT_ENABLE_CLIENT_API" ] || export RADIXDLT_ENABLE_CLIENT_API=false
 if [[ "$RADIXDLT_ENABLE_CLIENT_API" == true || "$RADIXDLT_ENABLE_CLIENT_API" == "True" ]];then
-  export INCLUDE_RADIXDLT_ENABLE_CLIENT_API="include conf.d/rpc-conf.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/rpc-conf.conf.envsubst >/etc/nginx/conf.d/rpc-conf.conf
+  export INCLUDE_RADIXDLT_ENABLE_CLIENT_API="include conf.d/archive-conf.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/archive-conf.conf.envsubst >/etc/nginx/conf.d/archive-conf.conf
+  construnction_conf_file="construction-conf"
+  export INCLUDE_RADIXDLT_ENABLE_CONSTRUCTION_API="include conf.d/${construnction_conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${construnction_conf_file}.conf.envsubst >/etc/nginx/conf.d/${construnction_conf_file}.conf
 fi
 
+[ "$RADIXDLT_CHAOS_ENABLE" ] || export RADIXDLT_CHAOS_ENABLE=false
 if [[ "$RADIXDLT_CHAOS_ENABLE" == true || "$RADIXDLT_CHAOS_ENABLE" == "True" ]];then
   export INCLUDE_RADIXDLT_CHAOS_ENABLE="include conf.d/chaos-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/chaos-conf.conf.envsubst >/etc/nginx/conf.d/chaos-conf.conf
 fi
 
+[ "$RADIXDLT_UNIVERSE_ENABLE" ] || export RADIXDLT_UNIVERSE_ENABLE=false
 if [[ "$RADIXDLT_UNIVERSE_ENABLE" == true || "$RADIXDLT_UNIVERSE_ENABLE" == "True" ]];then
   export INCLUDE_RADIXDLT_UNIVERSE_ENABLE="include conf.d/universe-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/universe-conf.conf.envsubst >/etc/nginx/conf.d/universe-conf.conf
 fi
+
+[ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
 if [[ "$RADIXDLT_ENABLE_SYSTEM_API" == true || "$RADIXDLT_ENABLE_SYSTEM_API" == "True" ]];then
   export INCLUDE_RADIXDLT_ENABLE_SYSTEM_API="include conf.d/system-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/system-conf.conf.envsubst >/etc/nginx/conf.d/system-conf.conf
 fi
-if [[ "$RADIXDLT_ENABLE_NODE_API" == true || "$RADIXDLT_ENABLE_NODE_API" == "True" ]];then
-  export INCLUDE_RADIXDLT_ENABLE_NODE_API="include conf.d/node-conf.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/node-conf.conf.envsubst >/etc/nginx/conf.d/node-conf.conf
+
+[ "$RADIXDLT_ENABLE_ACCOUNT_API" ] || export RADIXDLT_ENABLE_ACCOUNT_API=true
+if [[ "$RADIXDLT_ENABLE_ACCOUNT_API" == true || "$RADIXDLT_ENABLE_ACCOUNT_API" == "True" ]];then
+  conf_file="account-conf"
+  export INCLUDE_RADIXDLT_ENABLE_ACCOUNT_API="include conf.d/${conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
 fi
+
+
+[ "$RADIXDLT_ENABLE_VALIDATION_API" ] || export RADIXDLT_ENABLE_VALIDATION_API=true
+if [[ "$RADIXDLT_ENABLE_VALIDATION_API" == true || "$RADIXDLT_ENABLE_VALIDATION_API" == "True" ]];then
+  conf_file="validation-conf"
+  export INCLUDE_RADIXDLT_ENABLE_VALIDATION_API="include conf.d/${conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
+fi
+
+[ "$RADIXDLT_ENABLE_HEALTH_API" ] || export RADIXDLT_ENABLE_HEALTH_API=true
+if [[ "$RADIXDLT_ENABLE_HEALTH_API" == true || "$RADIXDLT_ENABLE_HEALTH_API" == "True" ]];then
+  conf_file="health-conf"
+  export INCLUDE_RADIXDLT_ENABLE_HEALTH_API="include conf.d/${conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
+fi
+
+[ "$RADIXDLT_ENABLE_VERSION_API" ] || export RADIXDLT_ENABLE_VERSION_API=true
+if [[ "$RADIXDLT_ENABLE_VERSION_API" == true || "$RADIXDLT_ENABLE_VERSION_API" == "True" ]];then
+  conf_file="version-conf"
+  export INCLUDE_RADIXDLT_ENABLE_VERSION_API="include conf.d/${conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
+fi
+
+[ "$RADIXDLT_ENABLE_METRICS_API" ] || export RADIXDLT_ENABLE_METRICS_API=true
+if [[ "$RADIXDLT_ENABLE_METRICS_API" == true || "$RADIXDLT_ENABLE_METRICS_API" == "True" ]];then
+  conf_file="metrics-conf"
+  export INCLUDE_RADIXDLT_ENABLE_METRICS_API="include conf.d/${conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
+fi
+
+
 
 DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
 
