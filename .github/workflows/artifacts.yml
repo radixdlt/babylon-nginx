@@ -10,6 +10,7 @@ name: Build artifacts
 
 jobs:
   build:
+    if: ${{ github.event_name == 'release' }}
     name: Upload nginx configuration artifacts
     runs-on: ubuntu-latest
     steps:

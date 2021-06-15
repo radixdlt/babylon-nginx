@@ -11,4 +11,7 @@ build:
 		-t $(REGISTRY)/radixdlt-nginx:$(DOCKER_TAG) \
 		-f Dockerfile.alpine .
 
+.PHONY: publish
+publish: build
+	docker push $(REGISTRY)/radixdlt-nginx:$(DOCKER_TAG)
 
