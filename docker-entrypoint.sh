@@ -27,6 +27,10 @@ fi
 if [[ "$RADIXDLT_ENABLE_CLIENT_API" == true || "$RADIXDLT_ENABLE_CLIENT_API" == "True" ]];then
   export INCLUDE_RADIXDLT_ENABLE_CLIENT_API="include conf.d/archive-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/archive-conf.conf.envsubst >/etc/nginx/conf.d/archive-conf.conf
+fi
+
+[ "$RADIXDLT_ENABLE_CONSTRUCTION_API" ] || export RADIXDLT_ENABLE_CONSTRUCTION_API=false
+if [[ "$RADIXDLT_ENABLE_CONSTRUCTION_API" == true || "$RADIXDLT_ENABLE_CONSTRUCTION_API" == "True" ]];then
   construnction_conf_file="construction-conf"
   export INCLUDE_RADIXDLT_ENABLE_CONSTRUCTION_API="include conf.d/${construnction_conf_file}.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/${construnction_conf_file}.conf.envsubst >/etc/nginx/conf.d/${construnction_conf_file}.conf
@@ -38,7 +42,7 @@ if [[ "$RADIXDLT_CHAOS_ENABLE" == true || "$RADIXDLT_CHAOS_ENABLE" == "True" ]];
   DOLLAR='$' envsubst </etc/nginx/conf.d/chaos-conf.conf.envsubst >/etc/nginx/conf.d/chaos-conf.conf
 fi
 
-[ "$RADIXDLT_UNIVERSE_ENABLE" ] || export RADIXDLT_UNIVERSE_ENABLE=false
+[ "$RADIXDLT_UNIVERSE_ENABLE" ] || export RADIXDLT_UNIVERSE_ENABLE=true
 if [[ "$RADIXDLT_UNIVERSE_ENABLE" == true || "$RADIXDLT_UNIVERSE_ENABLE" == "True" ]];then
   export INCLUDE_RADIXDLT_UNIVERSE_ENABLE="include conf.d/universe-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/universe-conf.conf.envsubst >/etc/nginx/conf.d/universe-conf.conf
