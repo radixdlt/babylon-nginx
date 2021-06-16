@@ -10,7 +10,6 @@ name: Build artifacts
 
 jobs:
   build:
-    if: ${{ github.event_name == 'release' }}
     name: Upload nginx configuration artifacts
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +23,7 @@ jobs:
         uses: bruceadams/get-release@v1.2.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
+        if: ${{ github.event_name == 'release' }}
       - name: Upload Archive Node Release Asset
         uses: actions/upload-release-asset@v1
         env:
@@ -33,6 +33,7 @@ jobs:
           asset_path: ./radixdlt-nginx-archive-conf.zip
           asset_name: radixdlt-nginx-archive-conf.zip
           asset_content_type: application/zip
+        if: ${{ github.event_name == 'release' }}
       - name: Upload Full Node Release Asset
         uses: actions/upload-release-asset@v1
         env:
@@ -42,6 +43,36 @@ jobs:
           asset_path: ./radixdlt-nginx-fullnode-conf.zip
           asset_name: radixdlt-nginx-fullnode-conf.zip
           asset_content_type: application/zip
+        if: ${{ github.event_name == 'release' }}
+
+
+      - name: set branchname with commit
+        run: |
+            BRANCH_NAME_WITH_HYPENS=$(git rev-parse --abbrev-ref HEAD | sed 's/\//-/g')
+            COMMIT=$(git log -1 --format=%h )
+            BRANCH_WITH_COMMIT=$BRANCH_NAME_WITH_HYPENS-$COMMIT
+            echo "BRANCH_WITH_COMMIT=$BRANCH_WITH_COMMIT" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Upload Archive Node zip file to aws
+        uses: shallwefootball/s3-upload-action@master
+        with:
+          aws_key_id: ${{ secrets.AWS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: ${{ secrets.AWS_BUCKET }}
+          source_dir: 'radixdlt-nginx-archive-conf.zip'
+          destination_dir: ${{env.BRANCH_WITH_COMMIT}}
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Upload full node Node zip file to aws
+        uses: actions/upload-release-asset@v1
+        with:
+          aws_key_id: ${{ secrets.AWS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: ${{ secrets.AWS_BUCKET }}
+          source_dir: 'radixdlt-nginx-fullnode-conf.zip'
+          destination_dir: ${{env.BRANCH_WITH_COMMIT}}
+        if: ${{ github.event_name == 'pull_request' }}
+
+
   docker:
     name: Build and publish Docker image
     runs-on: ubuntu-latest
@@ -55,13 +86,26 @@ jobs:
       - name: Set Environment Variables
         run: |
           GH_EVENT_NAME="${{ github.event_name }}"
-          if [[ ! -z $GH_EVENT_NAME ]] && [[ "$GH_EVENT_NAME" == "release" ]];then
-            echo "Workflow triggered by a release event"
-            NGINX_IMG_VERSION="${{ github.event.release.tag_name }}"
-          else
-            echo "Merge to master"
-            NGINX_IMG_VERSION="development-latest"
-          fi
+          BRANCH_REF="${{github.ref}}"
+          GIT_HUB_RELEASE_TAG=${{ github.event.release.tag_name }}
+          set_image_version(){
+              # $1 github event name , $2 branch ref value, $3 github release tag
+
+                if [[ ! -z $1 ]] && [[ "$1" == "release" ]];then
+                  echo "Workflow triggered by a release event"
+                  NGINX_IMG_VERSION="$3"
+                elif [[ ! -z $2 ]] && [[ "$2" == "refs/heads/master" ]];then
+                  echo "Merge to master"
+                  NGINX_IMG_VERSION="development-latest"
+                elif [[ ! -z $1  ]] && [[ "$1" == "pull_request" ]];then
+                    echo "Pull request"
+                    BRANCH_NAME_WITH_HYPENS=$(git rev-parse --abbrev-ref HEAD | sed 's/\//-/g')
+                    COMMIT=$(git log -1 --format=%h )
+                    NGINX_IMG_VERSION=$BRANCH_NAME_WITH_HYPENS-$COMMIT
+                fi
+              }
+
+          set_image_version $GH_EVENT_NAME $BRANCH_REF $GIT_HUB_RELEASE_TAG
           echo "Image tag: $NGINX_IMG_VERSION"
           echo "NGINX_IMG_VERSION=$NGINX_IMG_VERSION" >> $GITHUB_ENV
       - name: Docker build and push
