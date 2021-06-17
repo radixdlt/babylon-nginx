@@ -55,8 +55,8 @@ jobs:
             BRANCH_WITH_COMMIT=$BRANCH_NAME_WITH_HYPENS-$COMMIT
             echo "BRANCH_WITH_COMMIT=$BRANCH_WITH_COMMIT" >> $GITHUB_ENV
         if: ${{ github.event_name == 'pull_request' }}
+      - uses: chrislennon/action-aws-cli@v1.1
       - name: Upload Archive Node zip file to aws
-        uses: chrislennon/action-aws-cli@v1.1
         run: aws s3 sync  ./ s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{BRANCH_WITH_COMMIT}} --delete  --exclude='*' --include='*/radixdlt-nginx-archive-conf.zip'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
