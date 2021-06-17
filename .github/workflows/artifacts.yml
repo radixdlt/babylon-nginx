@@ -61,20 +61,13 @@ jobs:
         uses: unfor19/install-aws-cli-action@v1
         with:
           version: 2
-      - name: Upload Archive Node zip file to aws
-        run: aws s3 sync  ./ s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}} --delete  --exclude='*' --include='*/radixdlt-nginx-archive-conf.zip'
+      - name: Upload Archive and full  Node zip file to aws
+        run: |
+          aws s3 cp radixdlt-nginx-archive-conf.zip s3://mybucket/s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/radixdlt-nginx-archive-conf.zip
+          aws s3 cp radixdlt-nginx-fullnode-conf.zip s3://mybucket/s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/radixdlt-nginx-fullnode-conf.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
-        if: ${{ github.event_name == 'pull_request' }}
-      - name: Upload full node Node zip file to aws
-        uses: actions/upload-release-asset@v1
-        with:
-          aws_key_id: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: ${{ secrets.ARTIFACT_AWS_BUCKET }}
-          source_dir: 'radixdlt-nginx-fullnode-conf.zip'
-          destination_dir: ${{env.BRANCH_WITH_COMMIT}}
         if: ${{ github.event_name == 'pull_request' }}
 
 
