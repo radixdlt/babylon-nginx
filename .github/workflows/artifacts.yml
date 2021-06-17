@@ -13,6 +13,7 @@ jobs:
   build:
     name: Upload nginx configuration artifacts
     runs-on: ubuntu-latest
+    environment: AWS_ARTIFACT
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
