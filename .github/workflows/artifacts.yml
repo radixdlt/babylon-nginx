@@ -63,8 +63,8 @@ jobs:
           version: 2
       - name: Upload Archive and full  Node zip file to aws
         run: |
-          aws s3 cp radixdlt-nginx-archive-conf.zip s3://mybucket/s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/radixdlt-nginx-archive-conf.zip
-          aws s3 cp radixdlt-nginx-fullnode-conf.zip s3://mybucket/s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/radixdlt-nginx-fullnode-conf.zip
+          aws s3 cp radixdlt-nginx-archive-conf.zip s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/radixdlt-nginx-archive-conf.zip
+          aws s3 cp radixdlt-nginx-fullnode-conf.zip s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/radixdlt-nginx-fullnode-conf.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
