@@ -15,14 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: AWS_ARTIFACT
     steps:
-      - run: |
-          echo "GITHUB_REF=$GITHUB_REF"
-          echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
-      - name: Checkout codex
+      - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ env.GITHUB_HEAD_REF }}
-          fetch-depth: 0
       - name: Generate artifacts
         run: |
           bash generate_artifact.sh
@@ -56,7 +50,7 @@ jobs:
 
       - name: set branchname with commit
         run: |
-            BRANCH_NAME_WITH_HYPENS=$(git rev-parse --abbrev-ref HEAD | sed 's/\//-/g')
+            BRANCH_NAME_WITH_HYPENS=$(echo $GITHUB_HEAD_REF | sed 's/\//-/g')
             COMMIT=$(git log -1 --format=%h )
             BRANCH_WITH_COMMIT=$BRANCH_NAME_WITH_HYPENS-$COMMIT
             echo "BRANCH_WITH_COMMIT=$BRANCH_WITH_COMMIT" >> $GITHUB_ENV
