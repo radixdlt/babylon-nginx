@@ -119,10 +119,15 @@ generate_password() {
     rm -f /etc/nginx/secrets/htpasswd.admin
 [ -z "$METRICS_PASSWORD" -a "$WIPE_METRICS_PASSWORD" != yes ] || \
     rm -f /etc/nginx/secrets/htpasswd.metrics
+[ -z "$SUPER_ADMIN_PASSWORD" -a "$SUPER_ADMIN_PASSWORD" != yes ] || \
+    rm -f /etc/nginx/secrets/htpasswd.admin
+
 [ -f /etc/nginx/secrets/htpasswd.admin ] || \
     generate_password /etc/nginx/secrets/htpasswd.admin "${ADMIN_USER:-admin}" "${ADMIN_PASSWORD}"
 [ -f /etc/nginx/secrets/htpasswd.metrics ] || \
     generate_password /etc/nginx/secrets/htpasswd.metrics "${METRICS_USER:-metrics}" "${METRICS_PASSWORD}"
-unset ADMIN_USER ADMIN_PASSWORD METRICS_USER METRICS_PASSWORD
+[ -f /etc/nginx/secrets/htpasswd.metrics ] || \
+    generate_password /etc/nginx/secrets/htpasswd.superadmin "${SUPER_ADMIN_USER:-superadmin}" "${SUPER_ADMIN_PASSWORD}"
+unset ADMIN_USER ADMIN_PASSWORD METRICS_USER METRICS_PASSWORD SUPER_ADMIN_USER SUPER_ADMIN_PASSWORD
 
 exec "$@"

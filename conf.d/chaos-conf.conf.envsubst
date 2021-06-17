@@ -1,4 +1,6 @@
 location /chaos {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.superadmin;
+    auth_basic on;
     limit_except GET PUT {
         deny all;
     }
