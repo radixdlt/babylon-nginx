@@ -56,13 +56,11 @@ jobs:
             echo "BRANCH_WITH_COMMIT=$BRANCH_WITH_COMMIT" >> $GITHUB_ENV
         if: ${{ github.event_name == 'pull_request' }}
       - name: Upload Archive Node zip file to aws
-        uses: shallwefootball/s3-upload-action@master
-        with:
-          aws_key_id: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: ${{ secrets.ARTIFACT_AWS_BUCKET }}
-          source_dir: 'radixdlt-nginx-archive-conf.zip'
-          destination_dir: ${{env.BRANCH_WITH_COMMIT}}
+        uses: chrislennon/action-aws-cli@v1.1
+        run: aws s3 sync  ./ s3://${{ secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}} --delete  --exclude='*' --include='*/radixdlt-nginx-archive-conf.zip'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
         if: ${{ github.event_name == 'pull_request' }}
       - name: Upload full node Node zip file to aws
         uses: actions/upload-release-asset@v1
