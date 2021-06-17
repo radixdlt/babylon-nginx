@@ -57,7 +57,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
       - name: Upload Archive Node zip file to aws
         uses: chrislennon/action-aws-cli@v1.1
-        run: aws s3 sync  ./ s3://${{ secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}} --delete  --exclude='*' --include='*/radixdlt-nginx-archive-conf.zip'
+        run: aws s3 sync  ./ s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{BRANCH_WITH_COMMIT}} --delete  --exclude='*' --include='*/radixdlt-nginx-archive-conf.zip'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
