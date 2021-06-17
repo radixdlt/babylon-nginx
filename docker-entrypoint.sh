@@ -20,9 +20,9 @@ if [[ "$RADIXDLT_ENABLE_FAUCET" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]
   DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
 
-[ "$RADIXDLT_ENABLE_CLIENT_API" ] || export RADIXDLT_ENABLE_CLIENT_API=false
-if [[ "$RADIXDLT_ENABLE_CLIENT_API" == true || "$RADIXDLT_ENABLE_CLIENT_API" == "True" ]];then
-  export INCLUDE_RADIXDLT_ENABLE_CLIENT_API="include conf.d/archive-conf.conf;"
+[ "$RADIXDLT_ARCHIVE_API_ENABLE" ] || export RADIXDLT_ARCHIVE_API_ENABLE=false
+if [[ "$RADIXDLT_ARCHIVE_API_ENABLE" == true || "$RADIXDLT_ARCHIVE_API_ENABLE" == "True" ]];then
+  export INCLUDE_RADIXDLT_ARCHIVE_API_ENABLE="include conf.d/archive-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/archive-conf.conf.envsubst >/etc/nginx/conf.d/archive-conf.conf
 fi
 
