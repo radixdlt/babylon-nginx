@@ -15,14 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: AWS_ARTIFACT
     steps:
-      - name: Checkout code
+      - name: Checkout codex
         uses: actions/checkout@v2
-      - name: reattach HEAD to Head Ref
-        run: git checkout "$(echo ${{ github.head_ref }} | sed -E 's|refs/[a-zA-Z]+/||')"
-        if: github.head_ref != ''
-      - name: reattach HEAD to Ref
-        run: git checkout "$(echo ${{ github.ref }} | sed -E 's|refs/[a-zA-Z]+/||')"
-        if: github.head_ref == ''
+        with:
+          ref: ${{ GITHUB_REF }}
+          fetch-depth: 0
       - name: Generate artifacts
         run: |
           bash generate_artifact.sh
