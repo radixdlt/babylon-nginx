@@ -56,7 +56,7 @@ jobs:
             echo "BRANCH_WITH_COMMIT=$BRANCH_WITH_COMMIT" >> $GITHUB_ENV
         if: ${{ github.event_name == 'pull_request' }}
       - name: Configure AWS Region
-          run: echo "AWS_DEFAULT_REGION=eu-west-1" >> $GITHUB_ENV
+        run: echo "AWS_DEFAULT_REGION=eu-west-1" >> $GITHUB_ENV
       - id: install-aws-cli
         uses: unfor19/install-aws-cli-action@v1
         with:
