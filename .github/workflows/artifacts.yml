@@ -81,6 +81,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Set Environment Variables
         run: |
           GH_EVENT_NAME="${{ github.event_name }}"
@@ -97,7 +99,7 @@ jobs:
                   NGINX_IMG_VERSION="development-latest"
                 elif [[ ! -z $1  ]] && [[ "$1" == "pull_request" ]];then
                     echo "Pull request"
-                    BRANCH_NAME_WITH_HYPENS=$(git rev-parse --abbrev-ref HEAD | sed 's/\//-/g')
+                    BRANCH_NAME_WITH_HYPENS=$(echo $GITHUB_HEAD_REF | sed 's/\//-/g')
                     COMMIT=$(git log -1 --format=%h )
                     NGINX_IMG_VERSION=$BRANCH_NAME_WITH_HYPENS-$COMMIT
                 fi
