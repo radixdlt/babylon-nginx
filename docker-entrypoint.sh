@@ -26,10 +26,10 @@ if [[ "$RADIXDLT_ARCHIVE_API_ENABLE" == true || "$RADIXDLT_ARCHIVE_API_ENABLE" =
   DOLLAR='$' envsubst </etc/nginx/conf.d/archive-conf.conf.envsubst >/etc/nginx/conf.d/archive-conf.conf
 fi
 
-[ "$RADIXDLT_ENABLE_CONSTRUCTION_API" ] || export RADIXDLT_ENABLE_CONSTRUCTION_API=false
-if [[ "$RADIXDLT_ENABLE_CONSTRUCTION_API" == true || "$RADIXDLT_ENABLE_CONSTRUCTION_API" == "True" ]];then
+[ "$RADIXDLT_CONSTRUCTION_API_ENABLE" ] || export RADIXDLT_CONSTRUCTION_API_ENABLE=false
+if [[ "$RADIXDLT_CONSTRUCTION_API_ENABLE" == true || "$RADIXDLT_CONSTRUCTION_API_ENABLE" == "True" ]];then
   construnction_conf_file="construction-conf"
-  export INCLUDE_RADIXDLT_ENABLE_CONSTRUCTION_API="include conf.d/${construnction_conf_file}.conf;"
+  export INCLUDE_RADIXDLT_CONSTRUCTION_API_ENABLE="include conf.d/${construnction_conf_file}.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/${construnction_conf_file}.conf.envsubst >/etc/nginx/conf.d/${construnction_conf_file}.conf
 fi
 
