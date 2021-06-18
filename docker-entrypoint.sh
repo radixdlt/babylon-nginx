@@ -14,8 +14,8 @@ set -e
 
 
 
-[ "$RADIXDLT_ENABLE_FAUCET" ] || export RADIXDLT_ENABLE_FAUCET=false
-if [[ "$RADIXDLT_ENABLE_FAUCET" == true || "$RADIXDLT_ENABLE_FAUCET" == "True" ]];then
+[ "$RADIXDLT_FAUCET_API_ENABLE" ] || export RADIXDLT_FAUCET_API_ENABLE=false
+if [[ "$RADIXDLT_FAUCET_API_ENABLE" == true || "$RADIXDLT_FAUCET_API_ENABLE" == "True" ]];then
   export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
 fi
@@ -33,9 +33,9 @@ if [[ "$RADIXDLT_CONSTRUCTION_API_ENABLE" == true || "$RADIXDLT_CONSTRUCTION_API
   DOLLAR='$' envsubst </etc/nginx/conf.d/${construnction_conf_file}.conf.envsubst >/etc/nginx/conf.d/${construnction_conf_file}.conf
 fi
 
-[ "$RADIXDLT_CHAOS_ENABLE" ] || export RADIXDLT_CHAOS_ENABLE=false
-if [[ "$RADIXDLT_CHAOS_ENABLE" == true || "$RADIXDLT_CHAOS_ENABLE" == "True" ]];then
-  export INCLUDE_RADIXDLT_CHAOS_ENABLE="include conf.d/chaos-conf.conf;"
+[ "$RADIXDLT_CHAOS_API_ENABLE" ] || export RADIXDLT_CHAOS_API_ENABLE=false
+if [[ "$RADIXDLT_CHAOS_API_ENABLE" == true || "$RADIXDLT_CHAOS_API_ENABLE" == "True" ]];then
+  export INCLUDE_RADIXDLT_CHAOS_API_ENABLE="include conf.d/chaos-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/chaos-conf.conf.envsubst >/etc/nginx/conf.d/chaos-conf.conf
 fi
 
