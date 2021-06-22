@@ -1,4 +1,6 @@
-location /node {
+location /account {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.superadmin;
+    auth_basic on;
     limit_except GET POST {
         deny all;
     }

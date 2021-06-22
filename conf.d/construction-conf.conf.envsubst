@@ -1,4 +1,4 @@
-location /rpc {
+location /construction {
     auth_basic off;
     limit_req zone=perip burst=100 nodelay;
     proxy_pass ${DOLLAR}clientAPI;
