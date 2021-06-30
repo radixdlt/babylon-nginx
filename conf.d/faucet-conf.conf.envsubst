@@ -1,4 +1,4 @@
-location /faucet/request {
+location /faucet {
     limit_req zone=faucet burst=1 nodelay;
     auth_basic "off";
     limit_except GET POST {
