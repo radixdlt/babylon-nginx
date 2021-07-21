@@ -99,7 +99,7 @@ http {
         auth_basic on;
 
         # Limit the request body size
-        client_max_body_size 10k;
+        client_max_body_size 1m;
 
         # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
         set ${DOLLAR}clientAPI http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_CLIENT_HTTP_PORT;
