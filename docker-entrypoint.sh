@@ -2,6 +2,20 @@
 
 set -e
 
+generate_cloudflare_ip_conf(){
+  ip4s="$(curl https://www.cloudflare.com/ips-v4 2>/dev/null)"
+  ip6s="$(curl https://www.cloudflare.com/ips-v6 2>/dev/null)"
+  echo "" > /etc/nginx/conf.d/set-real-ip-cloudflare.conf
+  for ip in $ip4s; do
+    echo "set_real_ip_from ${ip};" >> /etc/nginx/conf.d/set-real-ip-cloudflare.conf
+  done
+
+  for ip in $ip6s; do
+    echo "set_real_ip_from ${ip};" >> /etc/nginx/conf.d/set-real-ip-cloudflare.conf
+  done
+  echo "real_ip_header    CF-Connecting-IP;" >> /etc/nginx/conf.d/set-real-ip-cloudflare.conf
+}
+
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
 
 [ "$RADIXDLT_VALIDATOR_HOST" ] || export RADIXDLT_VALIDATOR_HOST=core
@@ -12,6 +26,12 @@ set -e
 [ "$NGINX_CLIENT_HTTP_PORT" ] || export NGINX_CLIENT_HTTP_PORT=8080
 
 
+[ "$NGINX_LOGS_DIR" ] || export NGINX_LOGS_DIR="/var/log/nginx"
+[ "$NGINX_BEHIND_CLOUDFLARE" ] || export NGINX_BEHIND_CLOUDFLARE=false
+if [[ "$NGINX_BEHIND_CLOUDFLARE" == true || "$NGINX_BEHIND_CLOUDFLARE" == "True" ]];then
+  generate_cloudflare_ip_conf
+  export INCLUDE_NGINX_BEHIND_CLOUDFLARE="include conf.d/set-real-ip-cloudflare.conf;"
+fi
 
 [ "$RADIXDLT_FAUCET_API_ENABLE" ] || export RADIXDLT_FAUCET_API_ENABLE=false
 if [[ "$RADIXDLT_FAUCET_API_ENABLE" == true || "$RADIXDLT_FAUCET_API_ENABLE" == "True" ]];then
