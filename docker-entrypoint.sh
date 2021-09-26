@@ -58,12 +58,6 @@ if [[ "$RADIXDLT_CHAOS_API_ENABLE" == true || "$RADIXDLT_CHAOS_API_ENABLE" == "T
   DOLLAR='$' envsubst </etc/nginx/conf.d/chaos-conf.conf.envsubst >/etc/nginx/conf.d/chaos-conf.conf
 fi
 
-[ "$RADIXDLT_UNIVERSE_ENABLE" ] || export RADIXDLT_UNIVERSE_ENABLE=true
-if [[ "$RADIXDLT_UNIVERSE_ENABLE" == true || "$RADIXDLT_UNIVERSE_ENABLE" == "True" ]];then
-  export INCLUDE_RADIXDLT_UNIVERSE_ENABLE="include conf.d/universe-conf.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/universe-conf.conf.envsubst >/etc/nginx/conf.d/universe-conf.conf
-fi
-
 [ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
 if [[ "$RADIXDLT_ENABLE_SYSTEM_API" == true || "$RADIXDLT_ENABLE_SYSTEM_API" == "True" ]];then
   export INCLUDE_RADIXDLT_ENABLE_SYSTEM_API="include conf.d/system-conf.conf;"
