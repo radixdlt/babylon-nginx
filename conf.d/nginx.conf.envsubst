@@ -68,6 +68,7 @@ http {
                         '"pipe": "${DOLLAR}pipe", ' # "p" if request was pipelined, "." otherwise
                         '"gzip_ratio": "${DOLLAR}gzip_ratio", '
                         '"http_cf_ray": "${DOLLAR}http_cf_ray", '
+                        '"http_x_radixdlt_method": "${DOLLAR}http_x_radixdlt_method", '
                         '"http_cf_connecting_ip": "${DOLLAR}http_cf_connecting_ip"'
                         '}';
 
