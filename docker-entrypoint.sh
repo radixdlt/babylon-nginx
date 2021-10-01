@@ -16,6 +16,27 @@ generate_cloudflare_ip_conf(){
   echo "real_ip_header    CF-Connecting-IP;" >> /etc/nginx/conf.d/set-real-ip-cloudflare.conf
 }
 
+set_archive_rate_limits(){
+  [ "$ARCHIVE_ZONE_LIMIT" ] || export ARCHIVE_ZONE_LIMIT="110r/s"
+  [ "$ENABLE_ARCHIVE_RATE_LIMIT" ] || export ENABLE_ARCHIVE_RATE_LIMIT="true"
+  [ "$ARCHIVE_BURST_SETTINGS" ] || export ARCHIVE_BURST_SETTINGS="25"
+  if [[ "$ENABLE_ARCHIVE_RATE_LIMIT" == true || "$ENABLE_ARCHIVE_RATE_LIMIT" == "True" ]];then
+    export INCLUDE_ENABLE_ARCHIVE_RATE_LIMIT="limit_req zone=archive burst=$ARCHIVE_BURST_SETTINGS nodelay;"
+  fi
+}
+
+set_archive_basic_authentication(){
+  [ "$ENABLE_ARCHIVE_BASIC_AUTH" ] || export ENABLE_ARCHIVE_BASIC_AUTH="false"
+  if [[ "$ENABLE_ARCHIVE_BASIC_AUTH" == true || "$ENABLE_ARCHIVE_BASIC_AUTH" == "True" ]];then
+    export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic on;"
+  else
+    export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic off"
+  fi
+}
+set_archive_rate_limits
+set_archive_basic_authentication
+
+
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
 
 [ "$RADIXDLT_VALIDATOR_HOST" ] || export RADIXDLT_VALIDATOR_HOST=core
