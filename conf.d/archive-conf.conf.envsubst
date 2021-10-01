@@ -1,6 +1,6 @@
 location /archive {
     ${INCLUDE_ARCHIVE_BASIC_AUTH}
-    ${INCLUDE_ENABLE_ARCHIVE_RATE_LIMIT}
+    ${INCLUDE_RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT}
     proxy_pass ${DOLLAR}clientAPI;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
