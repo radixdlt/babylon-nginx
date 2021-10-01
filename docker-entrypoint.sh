@@ -30,7 +30,7 @@ set_archive_basic_authentication(){
   if [[ "$ENABLE_ARCHIVE_BASIC_AUTH" == true || "$ENABLE_ARCHIVE_BASIC_AUTH" == "True" ]];then
     export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic on;"
   else
-    export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic off"
+    export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic off;"
   fi
 }
 set_archive_rate_limits
