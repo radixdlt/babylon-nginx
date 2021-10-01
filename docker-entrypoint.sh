@@ -26,8 +26,8 @@ set_archive_rate_limits(){
 }
 
 set_archive_basic_authentication(){
-  [ "$ENABLE_ARCHIVE_BASIC_AUTH" ] || export ENABLE_ARCHIVE_BASIC_AUTH="false"
-  if [[ "$ENABLE_ARCHIVE_BASIC_AUTH" == true || "$ENABLE_ARCHIVE_BASIC_AUTH" == "True" ]];then
+  [ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" ] || export RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH="false"
+  if [[ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == true || "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == "True" ]];then
     export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic on;"
   else
     export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic off;"
