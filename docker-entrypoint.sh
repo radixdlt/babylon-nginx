@@ -21,7 +21,9 @@ set_archive_rate_limits(){
   [ "$RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT" ] || export RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT="true"
   [ "$RADIXDLT_ARCHIVE_BURST_SETTINGS" ] || export RADIXDLT_ARCHIVE_BURST_SETTINGS="25"
   if [[ "$RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT" == true || "$RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT" == "True" ]];then
-    export INCLUDE_RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT="limit_req zone=archive burst=$RADIXDLT_ARCHIVE_BURST_SETTINGS nodelay;"
+    archive_rate_limit_settings="auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    limit_req zone=archive burst=$RADIXDLT_ARCHIVE_BURST_SETTINGS nodelay;"
+    export INCLUDE_RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT=$archive_rate_limit_settings
   fi
 }
 
