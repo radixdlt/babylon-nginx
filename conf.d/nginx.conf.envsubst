@@ -102,6 +102,7 @@ http {
 
     # configure rate limit zones
     include conf.d/enable-rate-limits.conf;
+    limit_req_zone ${DOLLAR}binary_remote_addr zone=archive:10m rate=$RADIXDLT_ARCHIVE_ZONE_LIMIT;
     limit_req zone=perip burst=25 nodelay;
     limit_req zone=perserver burst=25 nodelay;
 
