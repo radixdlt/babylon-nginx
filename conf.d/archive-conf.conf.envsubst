@@ -1,3 +1,8 @@
+#block version 1.1.1 wallets
+if ($http_user_agent ~* (radix-olympia-desktop-wallet/1.1.1)) {
+        return 403;
+}
+
 location /archive {
     ${INCLUDE_ARCHIVE_BASIC_AUTH}
     ${INCLUDE_RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT}
