@@ -1,5 +1,5 @@
 #block version 1.1.1 wallets
-if ($http_user_agent ~* (radix-olympia-desktop-wallet/1.1.1)) {
+if (${DOLLAR}http_user_agent ~* (radix-olympia-desktop-wallet/1.1.1)) {
         return 403;
 }
 
