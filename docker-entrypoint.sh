@@ -37,6 +37,14 @@ set_construction_rate_limits(){
   fi
 }
 
+set_default_rate_limits(){
+  [ "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" ] || export RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS="true"
+  if [[ "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" == true || "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" == "True" ]];then
+    export INCLUDE_DEFAULT_RATE_LIMITS="      limit_req zone=perip burst=25 nodelay;
+    limit_req zone=perserver burst=25 nodelay;"
+  fi
+}
+
 set_archive_basic_authentication(){
   [ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" ] || export RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH="false"
   if [[ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == true || "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == "True" ]];then
@@ -46,9 +54,11 @@ set_archive_basic_authentication(){
     export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic off;"
   fi
 }
+
 set_archive_rate_limits
 set_archive_basic_authentication
 set_construction_rate_limits
+set_default_rate_limits
 
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
 
