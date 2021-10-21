@@ -104,6 +104,8 @@ http {
     include conf.d/enable-rate-limits.conf;
     limit_req_zone ${DOLLAR}binary_remote_addr zone=archive:10m rate=$RADIXDLT_ARCHIVE_ZONE_LIMIT;
     limit_req_zone ${DOLLAR}binary_remote_addr zone=construction:10m rate=$RADIXDLT_CONSTRUCTION_ZONE_LIMIT;
+    limit_req_zone ${DOLLAR}binary_remote_addr zone=faucet:10m rate=$RADIXDLT_FAUCET_ZONE_LIMIT;
+
     ${INCLUDE_DEFAULT_RATE_LIMITS}
 
     error_log $NGINX_LOGS_DIR/error.log notice;
