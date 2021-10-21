@@ -45,6 +45,15 @@ set_default_rate_limits(){
   fi
 }
 
+set_faucet_rate_limits(){
+  [ "$RADIXDLT_FAUCET_ZONE_LIMIT" ] || export RADIXDLT_FAUCET_ZONE_LIMIT="1r/s"
+  [ "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" ] || export RADIXDLT_ENABLE_FAUCET_RATE_LIMITS="true"
+  [ "$RADIXDLT_FAUCET_BURST_SETTINGS" ] || export RADIXDLT_FAUCET_BURST_SETTINGS="1"
+  if [[ "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" == true || "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" == "True" ]];then
+    export INCLUDE_FAUCET_RATE_LIMITS="      limit_req zone=faucent burst=$RADIXDLT_FAUCET_BURST_SETTINGS nodelay;"
+  fi
+}
+
 set_archive_basic_authentication(){
   [ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" ] || export RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH="false"
   if [[ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == true || "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == "True" ]];then
@@ -55,10 +64,13 @@ set_archive_basic_authentication(){
   fi
 }
 
+
 set_archive_rate_limits
 set_archive_basic_authentication
 set_construction_rate_limits
 set_default_rate_limits
+set_faucet_rate_limits
+
 
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
 
