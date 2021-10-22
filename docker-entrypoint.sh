@@ -50,7 +50,7 @@ set_faucet_rate_limits(){
   [ "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" ] || export RADIXDLT_ENABLE_FAUCET_RATE_LIMITS="true"
   [ "$RADIXDLT_FAUCET_BURST_SETTINGS" ] || export RADIXDLT_FAUCET_BURST_SETTINGS="1"
   if [[ "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" == true || "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" == "True" ]];then
-    export INCLUDE_FAUCET_RATE_LIMITS="      limit_req zone=faucent burst=$RADIXDLT_FAUCET_BURST_SETTINGS nodelay;"
+    export INCLUDE_FAUCET_RATE_LIMITS="      limit_req zone=faucet burst=$RADIXDLT_FAUCET_BURST_SETTINGS nodelay;"
   fi
 }
 
