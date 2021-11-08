@@ -3,8 +3,8 @@
 set -e
 
 generate_cloudflare_ip_conf(){
-  ip4s="$(curl https://www.cloudflare.com/ips-v4 2>/dev/null)"
-  ip6s="$(curl https://www.cloudflare.com/ips-v6 2>/dev/null)"
+  ip4s="$(wget -qO- https://www.cloudflare.com/ips-v4 2>/dev/null)"
+  ip6s="$(wget -qO- https://www.cloudflare.com/ips-v6 2>/dev/null)"
   echo "" > /etc/nginx/conf.d/set-real-ip-cloudflare.conf
   for ip in $ip4s; do
     echo "set_real_ip_from ${ip};" >> /etc/nginx/conf.d/set-real-ip-cloudflare.conf
