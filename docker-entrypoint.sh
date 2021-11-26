@@ -108,6 +108,14 @@ if [[ "$RADIXDLT_CONSTRUCTION_API_ENABLE" == true || "$RADIXDLT_CONSTRUCTION_API
   DOLLAR='$' envsubst </etc/nginx/conf.d/${construnction_conf_file}.conf.envsubst >/etc/nginx/conf.d/${construnction_conf_file}.conf
 fi
 
+[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" ] || export RADIXDLT_TRANSACTIONS_API_ENABLE=false
+if [[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" == true || "$RADIXDLT_TRANSACTIONS_API_ENABLE" == "True" ]];then
+  transactions_conf_file="transactions-conf"
+  export INCLUDE_RADIXDLT_TRANSACTIONS_API_ENABLE="include conf.d/${transactions_conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${transactions_conf_file}.conf.envsubst >/etc/nginx/conf.d/${transactions_conf_file}.conf
+fi
+
+
 [ "$RADIXDLT_CHAOS_API_ENABLE" ] || export RADIXDLT_CHAOS_API_ENABLE=false
 if [[ "$RADIXDLT_CHAOS_API_ENABLE" == true || "$RADIXDLT_CHAOS_API_ENABLE" == "True" ]];then
   export INCLUDE_RADIXDLT_CHAOS_API_ENABLE="include conf.d/chaos-conf.conf;"
@@ -116,7 +124,7 @@ fi
 
 [ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
 if [[ "$RADIXDLT_ENABLE_SYSTEM_API" == true || "$RADIXDLT_ENABLE_SYSTEM_API" == "True" ]];then
-  export INCLUDE_RADIXDLT_ENABLE_SYSTEM_API="include conf.d/system-conf.conf;"
+  export INCLUDE_RADIXDLT_SYSTEM_API_ENABLE="include conf.d/system-conf.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/system-conf.conf.envsubst >/etc/nginx/conf.d/system-conf.conf
 fi
 

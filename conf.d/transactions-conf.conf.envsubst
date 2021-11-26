@@ -1,0 +1,6 @@
+location /transactions {
+    auth_basic off;
+    proxy_pass ${DOLLAR}node;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
