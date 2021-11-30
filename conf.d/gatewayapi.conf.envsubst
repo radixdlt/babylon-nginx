@@ -1,0 +1,5 @@
+location ~ ^/(network|token|account|validator|validators|transactions) {
+    proxy_pass ${DOLLAR}clientAPI;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}

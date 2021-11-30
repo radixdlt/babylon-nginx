@@ -57,11 +57,18 @@ if [[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" == true || "$RADIXDLT_TRANSACTIONS_API
   DOLLAR='$' envsubst </etc/nginx/conf.d/${transactions_conf_file}.conf.envsubst >/etc/nginx/conf.d/${transactions_conf_file}.conf
 fi
 
-[ "$RADIXDLT_CORE_API_ENABLE" ] || export RADIXDLT_CORE_API_ENABLE=false
+[ "$RADIXDLT_CORE_API_ENABLE" ] || export RADIXDLT_CORE_API_ENABLE=true
 if [[ "$RADIXDLT_CORE_API_ENABLE" == true || "$RADIXDLT_CORE_API_ENABLE" == "True" ]];then
   coreapi_conf_file="coreapi"
   export INCLUDE_RADIXDLT_CORE_API_ENABLE="include conf.d/${coreapi_conf_file}.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/${coreapi_conf_file}.conf.envsubst >/etc/nginx/conf.d/${coreapi_conf_file}.conf
+fi
+
+[ "$RADIXDLT_GATEWAY_API_ENABLE" ] || export RADIXDLT_GATEWAY_API_ENABLE=false
+if [[ "$RADIXDLT_GATEWAY_API_ENABLE" == true || "$RADIXDLT_GATEWAY_API_ENABLE" == "True" ]];then
+  gatewayapi_conf_file="gatewayapi"
+  export INCLUDE_RADIXDLT_GATEWAY_API_ENABLE="include conf.d/${gatewayapi_conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${gatewayapi_conf_file}.conf.envsubst >/etc/nginx/conf.d/${gatewayapi_conf_file}.conf
 fi
 
 [ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
