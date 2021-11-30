@@ -30,8 +30,6 @@ set_default_rate_limits(){
 
 set_default_rate_limits
 
-
-
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
 
 [ "$RADIXDLT_VALIDATOR_HOST" ] || export RADIXDLT_VALIDATOR_HOST=core
@@ -57,12 +55,6 @@ if [[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" == true || "$RADIXDLT_TRANSACTIONS_API
   DOLLAR='$' envsubst </etc/nginx/conf.d/${transactions_conf_file}.conf.envsubst >/etc/nginx/conf.d/${transactions_conf_file}.conf
 fi
 
-[ "$RADIXDLT_CORE_API_ENABLE" ] || export RADIXDLT_CORE_API_ENABLE=true
-if [[ "$RADIXDLT_CORE_API_ENABLE" == true || "$RADIXDLT_CORE_API_ENABLE" == "True" ]];then
-  coreapi_conf_file="coreapi"
-  export INCLUDE_RADIXDLT_CORE_API_ENABLE="include conf.d/${coreapi_conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${coreapi_conf_file}.conf.envsubst >/etc/nginx/conf.d/${coreapi_conf_file}.conf
-fi
 
 [ "$RADIXDLT_GATEWAY_API_ENABLE" ] || export RADIXDLT_GATEWAY_API_ENABLE=false
 if [[ "$RADIXDLT_GATEWAY_API_ENABLE" == true || "$RADIXDLT_GATEWAY_API_ENABLE" == "True" ]];then
@@ -71,19 +63,19 @@ if [[ "$RADIXDLT_GATEWAY_API_ENABLE" == true || "$RADIXDLT_GATEWAY_API_ENABLE" =
   DOLLAR='$' envsubst </etc/nginx/conf.d/${gatewayapi_conf_file}.conf.envsubst >/etc/nginx/conf.d/${gatewayapi_conf_file}.conf
 fi
 
-[ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
-if [[ "$RADIXDLT_ENABLE_SYSTEM_API" == true || "$RADIXDLT_ENABLE_SYSTEM_API" == "True" ]];then
-  system_conf_file="system"
-  export INCLUDE_RADIXDLT_SYSTEM_API_ENABLE="include conf.d/${system_conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d//${system_conf_file}.conf.envsubst >/etc/nginx/conf.d//${system_conf_file}.conf
-fi
 
-[ "$RADIXDLT_METRICS_API_ENABLE" ] || export RADIXDLT_METRICS_API_ENABLE=true
-if [[ "$RADIXDLT_METRICS_API_ENABLE" == true || "$RADIXDLT_METRICS_API_ENABLE" == "True" ]];then
-  conf_file="metrics"
-  export INCLUDE_RADIXDLT_METRICS_API_ENABLE="include conf.d/${conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
-fi
+coreapi_conf_file="coreapi"
+export INCLUDE_RADIXDLT_CORE_API_ENABLE="include conf.d/${coreapi_conf_file}.conf;"
+DOLLAR='$' envsubst </etc/nginx/conf.d/${coreapi_conf_file}.conf.envsubst >/etc/nginx/conf.d/${coreapi_conf_file}.conf
+
+system_conf_file="system"
+export INCLUDE_RADIXDLT_SYSTEM_API_ENABLE="include conf.d/${system_conf_file}.conf;"
+DOLLAR='$' envsubst </etc/nginx/conf.d//${system_conf_file}.conf.envsubst >/etc/nginx/conf.d//${system_conf_file}.conf
+
+conf_file="metrics"
+export INCLUDE_RADIXDLT_METRICS_API_ENABLE="include conf.d/${conf_file}.conf;"
+DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
+
 
 #Developer endpoints need to be avaiable for all nodes and networks
 conf_file="developer"
