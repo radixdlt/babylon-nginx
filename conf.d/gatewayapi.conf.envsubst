@@ -1,5 +1,36 @@
-location ~ ^/(network|token|account|validator|validators|transactions) {
+location /network {
     proxy_pass ${DOLLAR}clientAPI;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
+
+location /token {
+    proxy_pass ${DOLLAR}clientAPI;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location /account {
+    proxy_pass ${DOLLAR}clientAPI;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location /validator {
+    proxy_pass ${DOLLAR}clientAPI;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location /validators {
+    proxy_pass ${DOLLAR}clientAPI;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location /transactions {
+    proxy_pass ${DOLLAR}clientAPI;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
