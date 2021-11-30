@@ -16,26 +16,8 @@ generate_cloudflare_ip_conf(){
   echo "real_ip_header    CF-Connecting-IP;" >> /etc/nginx/conf.d/set-real-ip-cloudflare.conf
 }
 
-set_archive_rate_limits(){
-  [ "$RADIXDLT_ARCHIVE_ZONE_LIMIT" ] || export RADIXDLT_ARCHIVE_ZONE_LIMIT="110r/s"
-  [ "$RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT" ] || export RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT="true"
-  [ "$RADIXDLT_ARCHIVE_BURST_SETTINGS" ] || export RADIXDLT_ARCHIVE_BURST_SETTINGS="25"
-  if [[ "$RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT" == true || "$RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT" == "True" ]];then
-    archive_rate_limit_settings="limit_req zone=archive burst=$RADIXDLT_ARCHIVE_BURST_SETTINGS nodelay;"
-    export INCLUDE_RADIXDLT_ENABLE_ARCHIVE_RATE_LIMIT=$archive_rate_limit_settings
-  fi
-}
 
-set_construction_rate_limits(){
-  [ "$RADIXDLT_CONSTRUCTION_ZONE_LIMIT" ] || export RADIXDLT_CONSTRUCTION_ZONE_LIMIT="20r/s"
-  [ "$RADIXDLT_ENABLE_CONSTRUCTION_RATE_LIMIT" ] || export RADIXDLT_ENABLE_CONSTRUCTION_RATE_LIMIT="true"
-  [ "$RADIXDLT_CONSTRUCTION_BURST_SETTINGS" ] || export RADIXDLT_CONSTRUCTION_BURST_SETTINGS="100"
 
-  if [[ "$RADIXDLT_ENABLE_CONSTRUCTION_RATE_LIMIT" == true || "$RADIXDLT_ENABLE_CONSTRUCTION_RATE_LIMIT" == "True" ]];then
-    construction_rate_limit_settings="limit_req zone=construction burst=$RADIXDLT_CONSTRUCTION_BURST_SETTINGS nodelay;"
-    export INCLUDE_RADIXDLT_ENABLE_CONSTRUCTION_RATE_LIMIT=$construction_rate_limit_settings
-  fi
-}
 
 set_default_rate_limits(){
   [ "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" ] || export RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS="true"
@@ -45,31 +27,9 @@ set_default_rate_limits(){
   fi
 }
 
-set_faucet_rate_limits(){
-  [ "$RADIXDLT_FAUCET_ZONE_LIMIT" ] || export RADIXDLT_FAUCET_ZONE_LIMIT="1r/s"
-  [ "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" ] || export RADIXDLT_ENABLE_FAUCET_RATE_LIMITS="true"
-  [ "$RADIXDLT_FAUCET_BURST_SETTINGS" ] || export RADIXDLT_FAUCET_BURST_SETTINGS="1"
-  if [[ "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" == true || "$RADIXDLT_ENABLE_FAUCET_RATE_LIMITS" == "True" ]];then
-    export INCLUDE_FAUCET_RATE_LIMITS="      limit_req zone=faucet burst=$RADIXDLT_FAUCET_BURST_SETTINGS nodelay;"
-  fi
-}
 
-set_archive_basic_authentication(){
-  [ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" ] || export RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH="false"
-  if [[ "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == true || "$RADIXDLT_ENABLE_ARCHIVE_BASIC_AUTH" == "True" ]];then
-    export INCLUDE_ARCHIVE_BASIC_AUTH="  auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
-    auth_basic on;"
-  else
-    export INCLUDE_ARCHIVE_BASIC_AUTH="auth_basic off;"
-  fi
-}
-
-
-set_archive_rate_limits
-set_archive_basic_authentication
-set_construction_rate_limits
 set_default_rate_limits
-set_faucet_rate_limits
+
 
 
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
@@ -89,83 +49,37 @@ if [[ "$NGINX_BEHIND_CLOUDFLARE" == true || "$NGINX_BEHIND_CLOUDFLARE" == "True"
   export INCLUDE_NGINX_BEHIND_CLOUDFLARE="include conf.d/set-real-ip-cloudflare.conf;"
 fi
 
-[ "$RADIXDLT_FAUCET_API_ENABLE" ] || export RADIXDLT_FAUCET_API_ENABLE=false
-if [[ "$RADIXDLT_FAUCET_API_ENABLE" == true || "$RADIXDLT_FAUCET_API_ENABLE" == "True" ]];then
-  export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/faucet-conf.conf.envsubst >/etc/nginx/conf.d/faucet-conf.conf
-fi
-
-[ "$RADIXDLT_ARCHIVE_API_ENABLE" ] || export RADIXDLT_ARCHIVE_API_ENABLE=false
-if [[ "$RADIXDLT_ARCHIVE_API_ENABLE" == true || "$RADIXDLT_ARCHIVE_API_ENABLE" == "True" ]];then
-  export INCLUDE_RADIXDLT_ARCHIVE_API_ENABLE="include conf.d/archive-conf.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/archive-conf.conf.envsubst >/etc/nginx/conf.d/archive-conf.conf
-fi
-
-[ "$RADIXDLT_CONSTRUCTION_API_ENABLE" ] || export RADIXDLT_CONSTRUCTION_API_ENABLE=false
-if [[ "$RADIXDLT_CONSTRUCTION_API_ENABLE" == true || "$RADIXDLT_CONSTRUCTION_API_ENABLE" == "True" ]];then
-  construnction_conf_file="construction-conf"
-  export INCLUDE_RADIXDLT_CONSTRUCTION_API_ENABLE="include conf.d/${construnction_conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${construnction_conf_file}.conf.envsubst >/etc/nginx/conf.d/${construnction_conf_file}.conf
-fi
 
 [ "$RADIXDLT_TRANSACTIONS_API_ENABLE" ] || export RADIXDLT_TRANSACTIONS_API_ENABLE=false
 if [[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" == true || "$RADIXDLT_TRANSACTIONS_API_ENABLE" == "True" ]];then
-  transactions_conf_file="transactions-conf"
+  transactions_conf_file="transactions"
   export INCLUDE_RADIXDLT_TRANSACTIONS_API_ENABLE="include conf.d/${transactions_conf_file}.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/${transactions_conf_file}.conf.envsubst >/etc/nginx/conf.d/${transactions_conf_file}.conf
 fi
 
-
-[ "$RADIXDLT_CHAOS_API_ENABLE" ] || export RADIXDLT_CHAOS_API_ENABLE=false
-if [[ "$RADIXDLT_CHAOS_API_ENABLE" == true || "$RADIXDLT_CHAOS_API_ENABLE" == "True" ]];then
-  export INCLUDE_RADIXDLT_CHAOS_API_ENABLE="include conf.d/chaos-conf.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/chaos-conf.conf.envsubst >/etc/nginx/conf.d/chaos-conf.conf
+[ "$RADIXDLT_CORE_API_ENABLE" ] || export RADIXDLT_CORE_API_ENABLE=false
+if [[ "$RADIXDLT_CORE_API_ENABLE" == true || "$RADIXDLT_CORE_API_ENABLE" == "True" ]];then
+  coreapi_conf_file="coreapi"
+  export INCLUDE_RADIXDLT_CORE_API_ENABLE="include conf.d/${coreapi_conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${coreapi_conf_file}.conf.envsubst >/etc/nginx/conf.d/${coreapi_conf_file}.conf
 fi
 
 [ "$RADIXDLT_ENABLE_SYSTEM_API" ] || export RADIXDLT_ENABLE_SYSTEM_API=true
 if [[ "$RADIXDLT_ENABLE_SYSTEM_API" == true || "$RADIXDLT_ENABLE_SYSTEM_API" == "True" ]];then
-  export INCLUDE_RADIXDLT_SYSTEM_API_ENABLE="include conf.d/system-conf.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/system-conf.conf.envsubst >/etc/nginx/conf.d/system-conf.conf
-fi
-
-[ "$RADIXDLT_ACCOUNT_API_ENABLE" ] || export RADIXDLT_ACCOUNT_API_ENABLE=true
-if [[ "$RADIXDLT_ACCOUNT_API_ENABLE" == true || "$RADIXDLT_ACCOUNT_API_ENABLE" == "True" ]];then
-  conf_file="account-conf"
-  export INCLUDE_RADIXDLT_ACCOUNT_API_ENABLE="include conf.d/${conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
-fi
-
-
-[ "$RADIXDLT_VALIDATION_API_ENABLE" ] || export RADIXDLT_VALIDATION_API_ENABLE=true
-if [[ "$RADIXDLT_VALIDATION_API_ENABLE" == true || "$RADIXDLT_VALIDATION_API_ENABLE" == "True" ]];then
-  conf_file="validation-conf"
-  export INCLUDE_RADIXDLT_VALIDATION_API_ENABLE="include conf.d/${conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
-fi
-
-[ "$RADIXDLT_HEALTH_API_ENABLE" ] || export RADIXDLT_HEALTH_API_ENABLE=true
-if [[ "$RADIXDLT_HEALTH_API_ENABLE" == true || "$RADIXDLT_HEALTH_API_ENABLE" == "True" ]];then
-  conf_file="health-conf"
-  export INCLUDE_RADIXDLT_HEALTH_API_ENABLE="include conf.d/${conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
-fi
-
-[ "$RADIXDLT_VERSION_API_ENABLE" ] || export RADIXDLT_VERSION_API_ENABLE=true
-if [[ "$RADIXDLT_VERSION_API_ENABLE" == true || "$RADIXDLT_VERSION_API_ENABLE" == "True" ]];then
-  conf_file="version-conf"
-  export INCLUDE_RADIXDLT_VERSION_API_ENABLE="include conf.d/${conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
+  system_conf_file="system"
+  export INCLUDE_RADIXDLT_SYSTEM_API_ENABLE="include conf.d/${system_conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d//${system_conf_file}.conf.envsubst >/etc/nginx/conf.d//${system_conf_file}.conf
 fi
 
 [ "$RADIXDLT_METRICS_API_ENABLE" ] || export RADIXDLT_METRICS_API_ENABLE=true
 if [[ "$RADIXDLT_METRICS_API_ENABLE" == true || "$RADIXDLT_METRICS_API_ENABLE" == "True" ]];then
-  conf_file="metrics-conf"
+  conf_file="metrics"
   export INCLUDE_RADIXDLT_METRICS_API_ENABLE="include conf.d/${conf_file}.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
 fi
 
 #Developer endpoints need to be avaiable for all nodes and networks
-conf_file="developer-conf"
+conf_file="developer"
 export INCLUDE_RADIXDLT_ENABLE_DEVELOPER_API="include conf.d/${conf_file}.conf;"
 DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
 

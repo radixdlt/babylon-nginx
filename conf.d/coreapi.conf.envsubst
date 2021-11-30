@@ -1,0 +1,23 @@
+location /construction {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    auth_basic on;
+    proxy_pass ${DOLLAR}node;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location /entity {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    auth_basic on;
+    proxy_pass ${DOLLAR}node;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location /network {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    auth_basic on;
+    proxy_pass ${DOLLAR}node;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
