@@ -1,4 +1,4 @@
-location = /network {
+location = /gateway {
     auth_basic off;
     proxy_pass ${DOLLAR}clientAPI;
     include conf.d/enable-websocket.conf;
