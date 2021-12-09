@@ -22,8 +22,24 @@ location ~ ^/network/(configuration|status) {
     include conf.d/enable-cors.conf;
 }
 
-location = /sign {
+location /key {
     auth_basic_user_file /etc/nginx/secrets/htpasswd.superadmin;
+    auth_basic on;
+    proxy_pass ${DOLLAR}node;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location = /mempool {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    auth_basic on;
+    proxy_pass ${DOLLAR}node;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+location = /engine {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
     auth_basic on;
     proxy_pass ${DOLLAR}node;
     include conf.d/enable-websocket.conf;
