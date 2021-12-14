@@ -1,6 +1,6 @@
 location /construction {
     auth_basic off;
-    limit_req zone=perip burst=100 nodelay;
+    ${INCLUDE_RADIXDLT_ENABLE_CONSTRUCTION_RATE_LIMIT}
     proxy_pass ${DOLLAR}clientAPI;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;

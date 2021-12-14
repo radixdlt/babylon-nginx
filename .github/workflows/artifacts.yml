@@ -112,19 +112,20 @@ jobs:
                      rc_tag="$release_version-rc.1"
                      NGINX_IMG_VERSION=$rc_tag
                   fi
+                fi
+                if [[ "$BRANCH_NAME_WITH_HYPENS" == "master" ]];then
+                  NGINX_IMG_TAGS="radixdlt/radixdlt-nginx:$NGINX_IMG_VERSION,radixdlt/radixdlt-nginx:development-latest"
                 else
-                  echo "Merge to master"
-                  NGINX_IMG_VERSION="development-latest"
+                  NGINX_IMG_TAGS=radixdlt/radixdlt-nginx:$NGINX_IMG_VERSION
                 fi
               }
 
           set_image_version $GH_EVENT_NAME $BRANCH_REF $GIT_HUB_RELEASE_TAG
-          echo "Image tag: $NGINX_IMG_VERSION"
-          echo "NGINX_IMG_VERSION=$NGINX_IMG_VERSION" >> $GITHUB_ENV
+          echo "Image tag: $NGINX_IMG_TAGS"
+          echo "NGINX_IMG_TAGS=$NGINX_IMG_TAGS" >> $GITHUB_ENV
       - name: Docker build and push
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfile.alpine
           push: true
-          tags: |
-            radixdlt/radixdlt-nginx:${{ env.NGINX_IMG_VERSION }}
+          tags: ${{ env.NGINX_IMG_TAGS }}

@@ -5,7 +5,7 @@ error_log stderr notice;
 pid /var/run/nginx.pid;
 
 events {
-    worker_connections 8096;
+    worker_connections 65535;
 }
 
 stream {
@@ -22,7 +22,15 @@ stream {
 http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
-    #access_log stdout combined;
+
+     # log the bad requests:
+     map ${DOLLAR}status ${DOLLAR}loggable {
+                404 0;
+                499 1;
+                default 0;
+      }
+    ${INCLUDE_NGINX_BEHIND_CLOUDFLARE}
+
     log_format json_analytics escape=json '{'
                                 '"msec": "${DOLLAR}msec", ' # request unixtime in seconds with a milliseconds resolution
                                 '"connection": "${DOLLAR}connection", ' # connection serial number
@@ -60,7 +68,9 @@ http {
                         '"server_protocol": "${DOLLAR}server_protocol", ' # request protocol, like HTTP/1.1 or HTTP/2.0
                         '"pipe": "${DOLLAR}pipe", ' # "p" if request was pipelined, "." otherwise
                         '"gzip_ratio": "${DOLLAR}gzip_ratio", '
-                        '"http_cf_ray": "${DOLLAR}http_cf_ray"'
+                        '"http_cf_ray": "${DOLLAR}http_cf_ray", '
+                        '"http_x_radixdlt_method": "${DOLLAR}http_x_radixdlt_method", '
+                        '"http_cf_connecting_ip": "${DOLLAR}http_cf_connecting_ip"'
                         '}';
 
     sendfile on;
@@ -70,7 +80,13 @@ http {
     # https://gist.github.com/v0lkan/90fcb83c86918732b894
     client_body_timeout 12;
     client_header_timeout 12;
+    # How long an idle keepalive connection remains open.
     keepalive_timeout 15;
+    # Number of requests a client can make over a single keepalive connection. (default is 100)
+    keepalive_requests 500;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+
     send_timeout 10;
     # allow the server to close connection on non responding client, this will free up memory
     reset_timedout_connection on;
@@ -87,13 +103,22 @@ http {
 
     # configure rate limit zones
     include conf.d/enable-rate-limits.conf;
-    limit_req zone=perip burst=20 nodelay;
-    limit_req zone=perserver burst=20 nodelay;
+    limit_req_zone ${DOLLAR}binary_remote_addr zone=archive:10m rate=$RADIXDLT_ARCHIVE_ZONE_LIMIT;
+    limit_req_zone ${DOLLAR}binary_remote_addr zone=construction:10m rate=$RADIXDLT_CONSTRUCTION_ZONE_LIMIT;
+    limit_req_zone ${DOLLAR}binary_remote_addr zone=faucet:10m rate=$RADIXDLT_FAUCET_ZONE_LIMIT;
 
+    ${INCLUDE_DEFAULT_RATE_LIMITS}
+
+    error_log $NGINX_LOGS_DIR/error.log notice;
     server {
         listen 443 ssl;
         server_name localhost;
+
+        access_log $NGINX_LOGS_DIR/access_bad.log json_analytics if=${DOLLAR}loggable;
         access_log /dev/stdout json_analytics;
+
+        #include conf.d/cloudflare-allow.conf;
+        #deny all;
 
         # Basic Auth
         auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
@@ -111,14 +136,14 @@ http {
         ${INCLUDE_RADIXDLT_ARCHIVE_API_ENABLE}
         ${INCLUDE_RADIXDLT_CONSTRUCTION_API_ENABLE}
         ${INCLUDE_RADIXDLT_CHAOS_API_ENABLE}
-        ${INCLUDE_RADIXDLT_UNIVERSE_ENABLE}
-        ${INCLUDE_RADIXDLT_ENABLE_SYSTEM_API}
-        ${INCLUDE_RADIXDLT_ENABLE_ACCOUNT_API}
-        ${INCLUDE_RADIXDLT_ENABLE_VALIDATION_API}
-        ${INCLUDE_RADIXDLT_ENABLE_HEALTH_API}
-        ${INCLUDE_RADIXDLT_ENABLE_VERSION_API}
-        ${INCLUDE_RADIXDLT_ENABLE_METRICS_API}
+        ${INCLUDE_RADIXDLT_SYSTEM_API_ENABLE}
+        ${INCLUDE_RADIXDLT_ACCOUNT_API_ENABLE}
+        ${INCLUDE_RADIXDLT_VALIDATION_API_ENABLE}
+        ${INCLUDE_RADIXDLT_HEALTH_API_ENABLE}
+        ${INCLUDE_RADIXDLT_VERSION_API_ENABLE}
+        ${INCLUDE_RADIXDLT_METRICS_API_ENABLE}
         ${INCLUDE_RADIXDLT_ENABLE_DEVELOPER_API}
+        ${INCLUDE_RADIXDLT_ENABLE_ACCOUNT}
     }
      server {
             listen 9195;
@@ -126,4 +151,3 @@ http {
             include conf.d/nginx-status-location.conf;
      }
 }
-
