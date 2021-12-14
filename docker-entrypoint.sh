@@ -89,6 +89,11 @@ if [[ "$NGINX_BEHIND_CLOUDFLARE" == true || "$NGINX_BEHIND_CLOUDFLARE" == "True"
   export INCLUDE_NGINX_BEHIND_CLOUDFLARE="include conf.d/set-real-ip-cloudflare.conf;"
 fi
 
+[ "$RADIXDLT_NETWORK_USE_PROXY_PROTOCOL" ] || export RADIXDLT_NETWORK_USE_PROXY_PROTOCOL=false
+if [[ "$RADIXDLT_NETWORK_USE_PROXY_PROTOCOL" == true || "$RADIXDLT_NETWORK_USE_PROXY_PROTOCOL" == "True" ]];then
+  export INCLUDE_RADIXDLT_NETWORK_USE_PROXY_PROTOCOL="proxy_protocol on;"
+fi
+
 [ "$RADIXDLT_FAUCET_API_ENABLE" ] || export RADIXDLT_FAUCET_API_ENABLE=false
 if [[ "$RADIXDLT_FAUCET_API_ENABLE" == true || "$RADIXDLT_FAUCET_API_ENABLE" == "True" ]];then
   export INCLUDE_RADIXDLT_FAUCET_ENABLED="include conf.d/faucet-conf.conf;"
