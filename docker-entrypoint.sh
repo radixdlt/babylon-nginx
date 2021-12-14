@@ -16,9 +16,6 @@ generate_cloudflare_ip_conf(){
   echo "real_ip_header    CF-Connecting-IP;" >> /etc/nginx/conf.d/set-real-ip-cloudflare.conf
 }
 
-
-
-
 set_default_rate_limits(){
   [ "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" ] || export RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS="true"
   if [[ "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" == true || "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" == "True" ]];then
@@ -26,7 +23,6 @@ set_default_rate_limits(){
     limit_req zone=perserver burst=25 nodelay;"
   fi
 }
-
 
 set_default_rate_limits
 
@@ -47,6 +43,11 @@ if [[ "$NGINX_BEHIND_CLOUDFLARE" == true || "$NGINX_BEHIND_CLOUDFLARE" == "True"
   export INCLUDE_NGINX_BEHIND_CLOUDFLARE="include conf.d/set-real-ip-cloudflare.conf;"
 fi
 
+
+[ "$RADIXDLT_NETWORK_USE_PROXY_PROTOCOL" ] || export RADIXDLT_NETWORK_USE_PROXY_PROTOCOL=false
+if [[ "$RADIXDLT_NETWORK_USE_PROXY_PROTOCOL" == true || "$RADIXDLT_NETWORK_USE_PROXY_PROTOCOL" == "True" ]];then
+  export INCLUDE_RADIXDLT_NETWORK_USE_PROXY_PROTOCOL="proxy_protocol on;"
+fi
 
 [ "$RADIXDLT_TRANSACTIONS_API_ENABLE" ] || export RADIXDLT_TRANSACTIONS_API_ENABLE=false
 if [[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" == true || "$RADIXDLT_TRANSACTIONS_API_ENABLE" == "True" ]];then
