@@ -103,9 +103,6 @@ http {
 
     # configure rate limit zones
     include conf.d/enable-rate-limits.conf;
-    limit_req_zone ${DOLLAR}binary_remote_addr zone=archive:10m rate=$RADIXDLT_ARCHIVE_ZONE_LIMIT;
-    limit_req_zone ${DOLLAR}binary_remote_addr zone=construction:10m rate=$RADIXDLT_CONSTRUCTION_ZONE_LIMIT;
-    limit_req_zone ${DOLLAR}binary_remote_addr zone=faucet:10m rate=$RADIXDLT_FAUCET_ZONE_LIMIT;
 
     ${INCLUDE_DEFAULT_RATE_LIMITS}
 
@@ -132,18 +129,12 @@ http {
         set ${DOLLAR}node http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
 
         include conf.d/error-location.conf;
-        ${INCLUDE_RADIXDLT_FAUCET_ENABLED}
-        ${INCLUDE_RADIXDLT_ARCHIVE_API_ENABLE}
-        ${INCLUDE_RADIXDLT_CONSTRUCTION_API_ENABLE}
-        ${INCLUDE_RADIXDLT_CHAOS_API_ENABLE}
+        ${INCLUDE_RADIXDLT_TRANSACTIONS_API_ENABLE}
+        ${INCLUDE_RADIXDLT_CORE_API_ENABLE}
+        ${INCLUDE_RADIXDLT_GATEWAY_API_ENABLE}
         ${INCLUDE_RADIXDLT_SYSTEM_API_ENABLE}
-        ${INCLUDE_RADIXDLT_ACCOUNT_API_ENABLE}
-        ${INCLUDE_RADIXDLT_VALIDATION_API_ENABLE}
-        ${INCLUDE_RADIXDLT_HEALTH_API_ENABLE}
-        ${INCLUDE_RADIXDLT_VERSION_API_ENABLE}
         ${INCLUDE_RADIXDLT_METRICS_API_ENABLE}
         ${INCLUDE_RADIXDLT_ENABLE_DEVELOPER_API}
-        ${INCLUDE_RADIXDLT_ENABLE_ACCOUNT}
     }
      server {
             listen 9195;

@@ -1,12 +1,10 @@
-location /version {
-    auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+location /prometheus/metrics {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
     auth_basic on;
     limit_except GET {
         deny all;
     }
     proxy_pass ${DOLLAR}node;
     include conf.d/enable-caching-proxy.conf;
-    proxy_cache radixdlt_hot;
-    proxy_cache_valid 200 10s;
     include conf.d/enable-cors.conf;
 }
