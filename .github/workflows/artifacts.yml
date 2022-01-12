@@ -30,16 +30,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         if: ${{ github.event_name == 'release' }}
-      - name: Upload Archive Node Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./radixdlt-nginx-archive-conf.zip
-          asset_name: radixdlt-nginx-archive-conf.zip
-          asset_content_type: application/zip
-        if: ${{ github.event_name == 'release' }}
       - name: Upload Full Node Release Asset
         uses: actions/upload-release-asset@v1
         env:
