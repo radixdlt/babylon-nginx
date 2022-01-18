@@ -8,6 +8,7 @@ export RADIXDLT_NODE_API_PORT=3334
 export NGINX_VALIDATOR_TCP_PORT=30000
 export NGINX_CLIENT_HTTP_PORT=8080
 export NGINX_NODE_HTTP_PORT=3333
+export RADIXDLT_NETWORK_USE_PROXY_PROTOCOL="True"
 
 #Remove the nginx configuration part and generate nginx.conf
 nginx_file_name="nginx-fullnode.conf"
