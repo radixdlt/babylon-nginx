@@ -61,3 +61,4 @@ jobs:
           tag: ${{ github.event.client_payload.release_tag }}
           omitBody: true
           name: ${{ github.event.client_payload.release_tag }}
+          prerelease: ${{ github.event.client_payload.is_prerelease }}
