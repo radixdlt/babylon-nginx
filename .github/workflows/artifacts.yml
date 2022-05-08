@@ -5,7 +5,7 @@ on:
     tags:
       - test-artifacts*
   release:
-    types: [ published ]
+    types: [ created ]
   repository_dispatch:
     types: [ rc_tag ]
 
