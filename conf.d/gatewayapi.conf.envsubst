@@ -1,13 +1,13 @@
 location = /gateway {
     auth_basic off;
-    proxy_pass ${DOLLAR}clientAPI;
+    proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
 
 location ~ ^/(token|account|validator|validators|transaction) {
     auth_basic off;
-    proxy_pass ${DOLLAR}clientAPI;
+    proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
