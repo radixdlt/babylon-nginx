@@ -7,7 +7,15 @@ location = /gateway {
 
 location = /gateway/metrics {
     auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
-    proxy_pass ${DOLLAR}gateway_api/metrics;
+    proxy_pass ${DOLLAR}gateway_api_metrics/metrics;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
+
+location = /aggregator/metrics {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.metrics;
+    proxy_pass ${DOLLAR}data_aggregator_metrics/metrics;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
