@@ -128,6 +128,8 @@ http {
         set ${DOLLAR}clientAPI http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_CLIENT_HTTP_PORT;
         set ${DOLLAR}node http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
         set ${DOLLAR}gateway_api http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_API_PORT;
+        set ${DOLLAR}gateway_api_metrics http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_METRICS_PORT;
+        set ${DOLLAR}data_aggregator_metrics http://$RADIXDLT_DATA_AGGREGATOR_HOST:$RADIXDLT_DATA_AGGREGATOR_METRICS_PORT;
 
         include conf.d/error-location.conf;
         ${INCLUDE_RADIXDLT_TRANSACTIONS_API_ENABLE}
