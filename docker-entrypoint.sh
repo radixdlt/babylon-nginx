@@ -24,6 +24,15 @@ set_default_rate_limits(){
   fi
 }
 
+enable_or_disable_basic_auth_for_gateway_api(){
+  [ "$RADIXDLT_GATEWAY_BEHIND_AUTH" ] || export RADIXDLT_GATEWAY_BEHIND_AUTH=true
+  if [[ "$RADIXDLT_GATEWAY_BEHIND_AUTH" == true || "$RADIXDLT_GATEWAY_BEHIND_AUTH" == "True" ]];then
+    export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;"
+  else
+    export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic off;"
+  fi
+}
+
 set_default_rate_limits
 
 [ "$NGINX_RESOLVER" ] || export NGINX_RESOLVER=$(awk '$1=="nameserver" {print $2;exit;}' </etc/resolv.conf)
@@ -66,8 +75,10 @@ fi
 if [[ "$RADIXDLT_GATEWAY_API_ENABLE" == true || "$RADIXDLT_GATEWAY_API_ENABLE" == "True" ]];then
   gatewayapi_conf_file="gatewayapi"
   export INCLUDE_RADIXDLT_GATEWAY_API_ENABLE="include conf.d/${gatewayapi_conf_file}.conf;"
+  enable_or_disable_basic_auth_for_gateway_api
   DOLLAR='$' envsubst </etc/nginx/conf.d/${gatewayapi_conf_file}.conf.envsubst >/etc/nginx/conf.d/${gatewayapi_conf_file}.conf
 fi
+
 
 
 coreapi_conf_file="coreapi"
