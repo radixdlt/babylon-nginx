@@ -27,7 +27,8 @@ set_default_rate_limits(){
 enable_or_disable_basic_auth_for_gateway_api(){
   [ "$RADIXDLT_GATEWAY_BEHIND_AUTH" ] || export RADIXDLT_GATEWAY_BEHIND_AUTH=true
   if [[ "$RADIXDLT_GATEWAY_BEHIND_AUTH" == true || "$RADIXDLT_GATEWAY_BEHIND_AUTH" == "True" ]];then
-    export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;"
+    export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    auth_basic on;"
   else
     export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic off;"
   fi
