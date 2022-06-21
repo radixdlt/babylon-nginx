@@ -1,5 +1,8 @@
 location = /gateway {
     ${ENABLE_GATEWAY_BEHIND_AUTH}
+    rewrite /gateway/(.*) /$1  break;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
     proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
@@ -22,6 +25,9 @@ location = /aggregator/metrics {
 
 location ~ ^/(token|account|validator|validators|transaction) {
     ${ENABLE_GATEWAY_BEHIND_AUTH}
+    rewrite /gateway/(.*) /$1  break;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
     proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
