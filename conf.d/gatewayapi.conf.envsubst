@@ -1,6 +1,6 @@
 location = /gateway {
-    auth_basic off;
-    proxy_pass ${DOLLAR}gateway_api;
+    ${ENABLE_GATEWAY_BEHIND_AUTH}
+    proxy_pass ${DOLLAR}gateway_api/;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
@@ -21,8 +21,8 @@ location = /aggregator/metrics {
 }
 
 location ~ ^/(token|account|validator|validators|transaction) {
-    auth_basic off;
-    proxy_pass ${DOLLAR}gateway_api;
+    ${ENABLE_GATEWAY_BEHIND_AUTH}
+    proxy_pass ${DOLLAR}gateway_api/;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
