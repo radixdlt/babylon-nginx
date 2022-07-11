@@ -27,7 +27,7 @@ set_default_rate_limits(){
 enable_or_disable_basic_auth_for_gateway_api(){
   [ "$RADIXDLT_GATEWAY_BEHIND_AUTH" ] || export RADIXDLT_GATEWAY_BEHIND_AUTH=true
   if [[ "$RADIXDLT_GATEWAY_BEHIND_AUTH" == true || "$RADIXDLT_GATEWAY_BEHIND_AUTH" == "True" ]];then
-    export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic_user_file /etc/nginx/secrets/htpasswd.gateway;
     auth_basic on;"
   else
     export ENABLE_GATEWAY_BEHIND_AUTH="auth_basic off;"
@@ -132,6 +132,8 @@ generate_password() {
     rm -f /etc/nginx/secrets/htpasswd.metrics
 [ -z "$SUPER_ADMIN_PASSWORD" -a "$SUPER_ADMIN_PASSWORD" != yes ] || \
     rm -f /etc/nginx/secrets/htpasswd.admin
+[ -z "$GATEWAY_PASSWORD" -a "$GATEWAY_PASSWORD" != yes ] || \
+    rm -f /etc/nginx/secrets/htpasswd.gateway
 
 [ -f /etc/nginx/secrets/htpasswd.admin ] || \
     generate_password /etc/nginx/secrets/htpasswd.admin "${ADMIN_USER:-admin}" "${ADMIN_PASSWORD}"
@@ -139,6 +141,8 @@ generate_password() {
     generate_password /etc/nginx/secrets/htpasswd.metrics "${METRICS_USER:-metrics}" "${METRICS_PASSWORD}"
 [ -f /etc/nginx/secrets/htpasswd.metrics ] || \
     generate_password /etc/nginx/secrets/htpasswd.superadmin "${SUPER_ADMIN_USER:-superadmin}" "${SUPER_ADMIN_PASSWORD}"
-unset ADMIN_USER ADMIN_PASSWORD METRICS_USER METRICS_PASSWORD SUPER_ADMIN_USER SUPER_ADMIN_PASSWORD
+[ -f /etc/nginx/secrets/htpasswd.gateway ] || \
+    generate_password /etc/nginx/secrets/htpasswd.gateway "${GATEWAY_USER:-gateway}" "${GATEWAY_PASSWORD}"
+unset ADMIN_USER ADMIN_PASSWORD METRICS_USER METRICS_PASSWORD SUPER_ADMIN_USER SUPER_ADMIN_PASSWORD GATEWAY_USER GATEWAY_PASSWORD
 
 exec "$@"
