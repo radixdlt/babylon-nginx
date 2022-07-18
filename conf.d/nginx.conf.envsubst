@@ -8,16 +8,7 @@ events {
     worker_connections 65535;
 }
 
-stream {
-    resolver "$NGINX_RESOLVER";
-    resolver_timeout 600s;
-    server {
-        listen $NGINX_VALIDATOR_TCP_PORT;
-        proxy_pass $RADIXDLT_VALIDATOR_HOST:$RADIXDLT_VALIDATOR_TCP_PORT;
-        ${INCLUDE_RADIXDLT_NETWORK_USE_PROXY_PROTOCOL}
-    }
-}
-
+${INCLUDE_RADIXDLT_ENABLE_TCP_CORE_PROXY}
 
 http {
     include /etc/nginx/mime.types;

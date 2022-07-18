@@ -81,6 +81,12 @@ if [[ "$RADIXDLT_GATEWAY_API_ENABLE" == true || "$RADIXDLT_GATEWAY_API_ENABLE" =
 fi
 
 
+[ "$RADIXDLT_ENABLE_TCP_CORE_PROXY" ] || export RADIXDLT_ENABLE_TCP_CORE_PROXY=true
+if [[ "$RADIXDLT_ENABLE_TCP_CORE_PROXY" == true || "$RADIXDLT_ENABLE_TCP_CORE_PROXY" == "True" ]];then
+  tcp_server_conf="coretcpserver"
+  export INCLUDE_RADIXDLT_ENABLE_TCP_CORE_PROXY="include conf.d/${tcp_server_conf}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${tcp_server_conf}.conf.envsubst >/etc/nginx/conf.d/${tcp_server_conf}.conf
+fi
 
 coreapi_conf_file="coreapi"
 export INCLUDE_RADIXDLT_CORE_API_ENABLE="include conf.d/${coreapi_conf_file}.conf;"
