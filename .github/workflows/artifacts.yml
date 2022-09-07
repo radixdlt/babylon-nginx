@@ -1,13 +1,9 @@
 on:
   push:
     branches:
-      - master
-    tags:
-      - test-artifacts*
+      - main
   release:
     types: [ created ]
-  repository_dispatch:
-    types: [ rc_tag ]
 
 
 name: Build artifacts
@@ -17,7 +13,6 @@ jobs:
     name: Upload nginx configuration artifacts
     runs-on: ubuntu-latest
     environment: AWS_ARTIFACT
-    if:  "${{ github.event.action != 'rc_tag' }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -36,8 +31,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./radixdlt-nginx-fullnode-conf.zip
-          asset_name: radixdlt-nginx-fullnode-conf.zip
+          asset_path: ./babylon-nginx-fullnode-conf.zip
+          asset_name: babylon-nginx-fullnode-conf.zip
           asset_content_type: application/zip
         if: ${{ github.event_name == 'release' }}
 
@@ -57,7 +52,7 @@ jobs:
           version: 2
       - name: Upload full  Node zip file to aws
         run: |
-          aws s3 cp radixdlt-nginx-fullnode-conf.zip s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/radixdlt-nginx-fullnode-conf.zip
+          aws s3 cp babylon-nginx-fullnode-conf.zip s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/babylon-nginx-fullnode-conf.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
@@ -103,9 +98,9 @@ jobs:
                   fi
                 fi
                 if [[ "$BRANCH_NAME_WITH_HYPENS" == "master" ]];then
-                  NGINX_IMG_TAGS="radixdlt/radixdlt-nginx:$NGINX_IMG_VERSION,radixdlt/radixdlt-nginx:development-latest"
+                  NGINX_IMG_TAGS="radixdlt/babylon-nginx:$NGINX_IMG_VERSION,radixdlt/babylon-nginx:development-latest"
                 else
-                  NGINX_IMG_TAGS=radixdlt/radixdlt-nginx:$NGINX_IMG_VERSION
+                  NGINX_IMG_TAGS=radixdlt/babylon-nginx:$NGINX_IMG_VERSION
                 fi
               }
 
