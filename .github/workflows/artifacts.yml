@@ -9,10 +9,10 @@ on:
 name: Build artifacts
 
 jobs:
-  build:
+  upload-release:
+    if: ${{ github.event_name == 'release' }}
     name: Upload nginx configuration artifacts
     runs-on: ubuntu-latest
-    environment: AWS_ARTIFACT
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -34,30 +34,6 @@ jobs:
           asset_path: ./babylon-nginx-fullnode-conf.zip
           asset_name: babylon-nginx-fullnode-conf.zip
           asset_content_type: application/zip
-        if: ${{ github.event_name == 'release' }}
-
-
-      - name: set branchname with commit
-        run: |
-            BRANCH_NAME_WITH_HYPENS=$(echo ${GITHUB_REF##*/} | sed 's/\//-/g')
-            COMMIT=$(git log -1 --format=%h )
-            BRANCH_WITH_COMMIT=$BRANCH_NAME_WITH_HYPENS-$COMMIT
-            echo "BRANCH_WITH_COMMIT=$BRANCH_WITH_COMMIT" >> $GITHUB_ENV
-        if: ${{ github.event_name == 'push' }}
-      - name: Configure AWS Region
-        run: echo "AWS_DEFAULT_REGION=eu-west-1" >> $GITHUB_ENV
-      - id: install-aws-cli
-        uses: unfor19/install-aws-cli-action@v1
-        with:
-          version: 2
-      - name: Upload full  Node zip file to aws
-        run: |
-          aws s3 cp babylon-nginx-fullnode-conf.zip s3://${{secrets.ARTIFACT_AWS_BUCKET }}/nginx/${{env.BRANCH_WITH_COMMIT}}/babylon-nginx-fullnode-conf.zip
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.ARTIFACT_AWS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.ARTIFACT_AWS_SECRET_ACCESS_KEY}}
-        if: ${{ github.event_name == 'push' }}
-
 
   docker:
     name: Build and publish Docker image
