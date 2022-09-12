@@ -1,7 +1,7 @@
-location = /transactions {
+location = /core/transactions {
     auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
     auth_basic on;
-    proxy_pass ${DOLLAR}node;
+    proxy_pass ${DOLLAR}core_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
 }
