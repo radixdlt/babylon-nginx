@@ -117,18 +117,20 @@ http {
 
         # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
         set ${DOLLAR}clientAPI http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_CLIENT_HTTP_PORT;
-        set ${DOLLAR}node http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
+        set ${DOLLAR}core_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
+        set ${DOLLAR}system_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
         set ${DOLLAR}gateway_api http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_API_PORT;
         set ${DOLLAR}gateway_api_metrics http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_METRICS_PORT;
         set ${DOLLAR}data_aggregator_metrics http://$RADIXDLT_DATA_AGGREGATOR_HOST:$RADIXDLT_DATA_AGGREGATOR_METRICS_PORT;
 
         include conf.d/error-location.conf;
         ${INCLUDE_RADIXDLT_TRANSACTIONS_API_ENABLE}
-        ${INCLUDE_RADIXDLT_CORE_API_ENABLE}
         ${INCLUDE_RADIXDLT_GATEWAY_API_ENABLE}
-        ${INCLUDE_RADIXDLT_SYSTEM_API_ENABLE}
+        ${INCLUDE_RADIXDLT_CORE_API_ENABLE}
+
+        # keep metrics api inclusion before system api inclusion so that metrics path takes priority for metrics basic auth settings it has
         ${INCLUDE_RADIXDLT_METRICS_API_ENABLE}
-        ${INCLUDE_RADIXDLT_ENABLE_DEVELOPER_API}
+        ${INCLUDE_RADIXDLT_SYSTEM_API_ENABLE}
         include external-conf.d/*.conf;
     }
      server {

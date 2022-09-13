@@ -47,6 +47,7 @@ set_default_rate_limits
 [ "$RADIXDLT_VALIDATOR_TCP_PORT" ] || export RADIXDLT_VALIDATOR_TCP_PORT=30000
 [ "$RADIXDLT_CLIENT_HTTP_PORT" ] || export RADIXDLT_CLIENT_HTTP_PORT=8080
 [ "$RADIXDLT_NODE_API_PORT" ] || export RADIXDLT_NODE_API_PORT=3333
+[ "$RADIXDLT_SYSTEM_API_PORT" ] || export RADIXDLT_SYSTEM_API_PORT=3334
 [ "$NGINX_VALIDATOR_TCP_PORT" ] || export NGINX_VALIDATOR_TCP_PORT=30000
 [ "$NGINX_CLIENT_HTTP_PORT" ] || export NGINX_CLIENT_HTTP_PORT=8080
 
@@ -100,11 +101,6 @@ conf_file="metrics"
 export INCLUDE_RADIXDLT_METRICS_API_ENABLE="include conf.d/${conf_file}.conf;"
 DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
 
-
-#Developer endpoints need to be avaiable for all nodes and networks
-conf_file="developer"
-export INCLUDE_RADIXDLT_ENABLE_DEVELOPER_API="include conf.d/${conf_file}.conf;"
-DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
 
 DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
 

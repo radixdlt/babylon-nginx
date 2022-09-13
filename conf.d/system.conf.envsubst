@@ -4,7 +4,7 @@ location /system {
     limit_except GET POST {
         deny all;
     }
-    proxy_pass ${DOLLAR}node;
+    proxy_pass ${DOLLAR}system_api;
     include conf.d/enable-caching-proxy.conf;
     proxy_cache radixdlt_hot;
     proxy_cache_valid 200 1s;

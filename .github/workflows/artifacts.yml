@@ -73,7 +73,7 @@ jobs:
                      NGINX_IMG_VERSION=$rc_tag
                   fi
                 fi
-                if [[ "$BRANCH_NAME_WITH_HYPENS" == "master" ]];then
+                if [[ "$BRANCH_NAME_WITH_HYPENS" == "main" ]];then
                   NGINX_IMG_TAGS="radixdlt/babylon-nginx:$NGINX_IMG_VERSION,radixdlt/babylon-nginx:development-latest"
                 else
                   NGINX_IMG_TAGS=radixdlt/babylon-nginx:$NGINX_IMG_VERSION
