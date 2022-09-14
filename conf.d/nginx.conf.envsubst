@@ -116,9 +116,8 @@ http {
         client_max_body_size 1m;
 
         # https://www.nadeau.tv/nginx-proxy_pass-dns-cache/
-        set ${DOLLAR}clientAPI http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_CLIENT_HTTP_PORT;
-        set ${DOLLAR}core_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
-        set ${DOLLAR}system_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_NODE_API_PORT;
+        set ${DOLLAR}core_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_CORE_API_PORT;
+        set ${DOLLAR}system_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_SYSTEM_API_PORT;
         set ${DOLLAR}gateway_api http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_API_PORT;
         set ${DOLLAR}gateway_api_metrics http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_METRICS_PORT;
         set ${DOLLAR}data_aggregator_metrics http://$RADIXDLT_DATA_AGGREGATOR_HOST:$RADIXDLT_DATA_AGGREGATOR_METRICS_PORT;
