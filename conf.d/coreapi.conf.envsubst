@@ -6,6 +6,15 @@ location /key {
     include conf.d/enable-cors.conf;
 }
 
+location /v0/ {
+    auth_basic off;
+
+    rewrite /v0/(.*) /core/v0/$1 break;
+    proxy_pass ${DOLLAR}core_api;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+}
+
 location /core {
     auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
     auth_basic on;
