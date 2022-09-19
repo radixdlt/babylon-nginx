@@ -8,11 +8,10 @@ location /key {
 
 location /v0/ {
     auth_basic off;
-
+    include conf.d/enable-cors.conf;
     rewrite /v0/(.*) /core/v0/$1 break;
     proxy_pass ${DOLLAR}core_api;
     include conf.d/enable-websocket.conf;
-    include conf.d/enable-cors.conf;
 }
 
 location /core {
