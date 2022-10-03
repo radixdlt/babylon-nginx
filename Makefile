@@ -8,10 +8,10 @@ all:
 .PHONY: build
 build:
 	docker build \
-		-t $(REGISTRY)/radixdlt-nginx:$(DOCKER_TAG) \
+		-t $(REGISTRY)/babylon-nginx:$(DOCKER_TAG) \
 		-f Dockerfile.alpine .
 
 .PHONY: publish
 publish: build
-	docker push $(REGISTRY)/radixdlt-nginx:$(DOCKER_TAG)
+	docker push $(REGISTRY)/babylon-nginx:$(DOCKER_TAG)
 
