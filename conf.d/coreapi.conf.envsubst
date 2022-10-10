@@ -12,7 +12,7 @@ location /v0/ {
     include conf.d/enable-websocket.conf;
     rewrite /v0/(.*) /core/v0/$1 break;
     proxy_pass ${DOLLAR}core_api;
-    client_max_body_size 10m;
+    client_max_body_size 50m;
 }
 
 location /core {
