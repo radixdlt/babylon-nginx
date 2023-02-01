@@ -35,6 +35,17 @@ jobs:
           asset_name: babylon-nginx-fullnode-conf.zip
           asset_content_type: application/zip
 
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump env
+        run: env | sort
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
   docker:
     name: Build and publish Docker image
     runs-on: ubuntu-latest
@@ -49,7 +60,7 @@ jobs:
         uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791
       - name: Set Environment Variables
         run: |
-          NGINX_IMG_TAGS=${{ github.event.release.tag_name }}
+          NGINX_IMG_TAGS=0.0.0-rc1
           echo "Image tag: $NGINX_IMG_TAGS"
           echo "NGINX_IMG_TAGS=$NGINX_IMG_TAGS" >> $GITHUB_ENV
       - name: Docker build and push
