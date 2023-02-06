@@ -38,7 +38,6 @@ jobs:
   debug:
     name: Debug
     runs-on: ubuntu-latest
-    environment: publish-dockerhub
     steps:
       - name: Dump env
         run: env | sort
@@ -46,27 +45,3 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-
-  docker:
-    name: Build and publish Docker image
-    runs-on: ubuntu-latest
-    environment: publish-dockerhub
-    steps:
-      - name: Login to Dockerhub
-        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Checkout code
-        uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791
-      - name: Set Environment Variables
-        run: |
-          NGINX_IMG_TAGS=0.0.0-rc1
-          echo "Image tag: $NGINX_IMG_TAGS"
-          echo "NGINX_IMG_TAGS=$NGINX_IMG_TAGS" >> $GITHUB_ENV
-      - name: Docker build and push
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
-        with:
-          file: ./Dockerfile.alpine
-          push: true
-          tags: ${{ env.NGINX_IMG_TAGS }}

@@ -2,3 +2,5 @@
 *.orig
 *.tgz
 .idea/
+conf.d/
+babylon-nginx-fullnode-conf.zip
