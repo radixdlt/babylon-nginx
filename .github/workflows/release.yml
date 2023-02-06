@@ -16,8 +16,6 @@ jobs:
 
   build_push_container:
     name: Build nginx docker container
-    needs:
-      - build_deb
     runs-on: ubuntu-22.04
     environment: release
     permissions:
