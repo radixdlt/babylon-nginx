@@ -43,7 +43,7 @@ jobs:
       # image information
       image_registry: "eu.gcr.io"
       image_organization: "dev-container-repo"
-      image_name: "babylon-node"
+      image_name: "babylon-nginx"
       tag: ${{ github.head_ref }}
       labels: ""
       # build information
@@ -52,7 +52,7 @@ jobs:
       dockerfile: "./Dockerfile.alpine"
       platforms: "linux/amd64"
       # optimizations
-      cache_tag_suffix: "release"
+      cache_tag_suffix: "pr"
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
@@ -64,15 +64,13 @@ jobs:
     with:
       environment: release
       # image information
-      image_registry: "eu.gcr.io"
-      image_organization: "dev-container-repo"
-      image_name: "babylon-node"
+      image_registry: "registry.hub.docker.com"
+      image_organization: "radixdlt"
+      image_name: "babylon-nginx"
       tag: ${{ github.head_ref }}
       labels: ""
       # build information
-      restore_artifact: "true"
-      artifact_name: "babylon-nginx-fullnode-conf.zip"
-      artifact_location: "babylon-nginx-fullnode-conf.zip"
+      restore_artifact: "false"
       context: "."
       dockerfile: "./Dockerfile.alpine"
       platforms: "linux/amd64"
