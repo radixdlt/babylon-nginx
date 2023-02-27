@@ -37,7 +37,7 @@ jobs:
           asset_content_type: application/zip
   
   build-push-container-gcr:
-    if: github.event_name == 'push'
+    if: github.event_name == 'pull_request'
     needs: 
       - upload-release
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
