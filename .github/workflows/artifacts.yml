@@ -38,8 +38,6 @@ jobs:
   
   build-push-container-gcr:
     if: github.event_name == 'pull_request'
-    needs: 
-      - upload-release
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
     with:
       # image information
@@ -62,8 +60,6 @@ jobs:
   
   build-push-container-docker:
     if: github.event_name == 'release'
-    needs: 
-      - upload-release
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
     with:
       environment: release
