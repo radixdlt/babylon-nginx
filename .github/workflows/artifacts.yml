@@ -68,7 +68,7 @@ jobs:
       image_registry: "docker.io"
       image_organization: "radixdlt"
       image_name: "babylon-nginx"
-      tag: ${{ github.head_ref }}
+      tag: ${{ github.event.release.tag_name }}
       # build information
       restore_artifact: "false"
       context: "."
