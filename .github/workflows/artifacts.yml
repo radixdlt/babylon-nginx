@@ -45,7 +45,6 @@ jobs:
       image_organization: "dev-container-repo"
       image_name: "babylon-nginx"
       tag: ${{ github.head_ref }}
-      labels: ""
       # build information
       restore_artifact: "false"
       context: "."
@@ -68,7 +67,6 @@ jobs:
       image_organization: "radixdlt"
       image_name: "babylon-nginx"
       tag: ${{ github.head_ref }}
-      labels: ""
       # build information
       restore_artifact: "false"
       context: "."
