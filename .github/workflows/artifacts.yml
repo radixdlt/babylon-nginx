@@ -41,7 +41,6 @@ jobs:
     name: GCR
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@DO-1215
     with:
-      runs_on: ubuntu-20.04
       # image information
       image_registry: "eu.gcr.io"
       image_organization: "dev-container-repo"
@@ -65,7 +64,6 @@ jobs:
     if: github.event_name == 'release'
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@DO-1215
     with:
-      runs_on: ubuntu-20.04
       environment: release
       # image information
       image_registry: "docker.io"
