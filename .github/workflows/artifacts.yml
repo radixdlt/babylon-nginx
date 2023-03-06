@@ -39,7 +39,7 @@ jobs:
   build-push-container-gcr:
     if: github.event_name == 'pull_request'
     name: GCR
-    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
+    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@DO-1215
     with:
       # image information
       image_registry: "eu.gcr.io"
@@ -53,6 +53,7 @@ jobs:
       platforms: "linux/amd64"
       # optimizations
       cache_tag_suffix: "pr"
+      enable_trivy: "true"
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
@@ -61,7 +62,7 @@ jobs:
   build-push-container-docker:
     name: Dockerhub
     if: github.event_name == 'release'
-    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
+    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@DO-1215
     with:
       environment: release
       # image information
@@ -77,6 +78,7 @@ jobs:
       # optimizations
       cache_tag_suffix: "release"
       enable_dockerhub: "true"
+      enable_trivy: "true"
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
