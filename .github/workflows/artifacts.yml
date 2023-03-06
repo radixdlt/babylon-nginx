@@ -53,11 +53,11 @@ jobs:
       platforms: "linux/amd64"
       # optimizations
       cache_tag_suffix: "pr"
+      enable_trivy: "true"
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-  
   build-push-container-docker:
     name: Dockerhub
     if: github.event_name == 'release'
@@ -77,6 +77,7 @@ jobs:
       # optimizations
       cache_tag_suffix: "release"
       enable_dockerhub: "true"
+      enable_trivy: "true"
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
