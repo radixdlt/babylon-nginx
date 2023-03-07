@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   release:
     types: [ created ]
 
@@ -15,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Generate artifacts
         run: |
           bash generate_artifact.sh
       - name: Get release
         id: get_release
-        uses: bruceadams/get-release@f589ce0779c7bef1faf175f7488c972eb47dc046
+        uses: bruceadams/get-release@74c3d60f5a28f358ccf241a00c9021ea16f0569f
         env:
           GITHUB_TOKEN: ${{ github.token }}
         if: ${{ github.event_name == 'release' }}
@@ -34,58 +35,50 @@ jobs:
           asset_path: ./babylon-nginx-fullnode-conf.zip
           asset_name: babylon-nginx-fullnode-conf.zip
           asset_content_type: application/zip
+  
+  build-push-container-gcr:
+    if: github.event_name == 'pull_request'
+    name: GCR
+    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
+    with:
+      # image information
+      image_registry: "eu.gcr.io"
+      image_organization: "dev-container-repo"
+      image_name: "babylon-nginx"
+      tag: ${{ github.head_ref }}
+      # build information
+      restore_artifact: "false"
+      context: "."
+      dockerfile: "./Dockerfile.alpine"
+      platforms: "linux/amd64"
+      # optimizations
+      cache_tag_suffix: "pr"
+      enable_trivy: "true"
+    secrets:
+      workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
+      service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-  docker:
-    name: Build and publish Docker image
-    runs-on: ubuntu-latest
-    environment: publish-dockerhub
-    steps:
-      - name: Login to Dockerhub
-        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Checkout code
-        uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791
-      - name: Set Environment Variables
-        run: |
-          GH_EVENT_NAME="${{ github.event_name }}"
-          BRANCH_REF="${{github.ref}}"
-          GIT_HUB_RELEASE_TAG=${{ github.event.release.tag_name }}
-          GIT_HUB_ACTION=${{ github.event.action}}
-          set_image_version(){
-              # $1 github event name , $2 branch ref value, $3 github release tag
-
-                if [[ ! -z $1 ]] && [[ "$1" == "release" ]];then
-                  echo "Workflow triggered by a release event"
-                  NGINX_IMG_VERSION="$3"
-                elif [[ ! -z $1  ]] && [[ "$1" == "push" ]];then
-                    echo "push event"
-                    BRANCH_NAME_WITH_HYPENS=$(echo ${GITHUB_REF##*/} | sed 's/\//-/g')
-                    COMMIT=$(git log -1 --format=%h )
-                    NGINX_IMG_VERSION=$BRANCH_NAME_WITH_HYPENS-$COMMIT
-                elif [[ ! -z $1 ]] && [[ "$1" == "repository_dispatch" ]];then
-                  if [[ ! -z $GIT_HUB_ACTION ]] && [[ $GIT_HUB_ACTION == "rc_tag" ]];then
-                     release_branch_ref=${{ github.event.client_payload.ref }}
-                     release_version=${release_branch_ref/refs\/heads\/release\//}
-                     echo "Release version: $release_version"
-                     rc_tag="$release_version-rc.1"
-                     NGINX_IMG_VERSION=$rc_tag
-                  fi
-                fi
-                if [[ "$BRANCH_NAME_WITH_HYPENS" == "main" ]];then
-                  NGINX_IMG_TAGS="radixdlt/babylon-nginx:$NGINX_IMG_VERSION,radixdlt/babylon-nginx:development-latest"
-                else
-                  NGINX_IMG_TAGS=radixdlt/babylon-nginx:$NGINX_IMG_VERSION
-                fi
-              }
-
-          set_image_version $GH_EVENT_NAME $BRANCH_REF $GIT_HUB_RELEASE_TAG
-          echo "Image tag: $NGINX_IMG_TAGS"
-          echo "NGINX_IMG_TAGS=$NGINX_IMG_TAGS" >> $GITHUB_ENV
-      - name: Docker build and push
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
-        with:
-          file: ./Dockerfile.alpine
-          push: true
-          tags: ${{ env.NGINX_IMG_TAGS }}
+  build-push-container-docker:
+    name: Dockerhub
+    if: github.event_name == 'release'
+    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
+    with:
+      environment: release
+      # image information
+      image_registry: "docker.io"
+      image_organization: "radixdlt"
+      image_name: "babylon-nginx"
+      tag: ${{ github.event.release.tag_name }}
+      # build information
+      restore_artifact: "false"
+      context: "."
+      dockerfile: "./Dockerfile.alpine"
+      platforms: "linux/amd64"
+      # optimizations
+      cache_tag_suffix: "release"
+      enable_dockerhub: "true"
+      enable_trivy: "true"
+    secrets:
+      workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
+      service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      role_to_assume: ${{ secrets.DOCKERHUB_RELEASER_ROLE }}
