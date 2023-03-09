@@ -9,21 +9,18 @@ name: Build artifacts
 
 jobs:
    build-push-container-gcr:
+    if: github.event_name == 'pull_request'
     name: GCR
-    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
+    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@fix/default-tag-type
     with:
       # image information
       image_registry: "eu.gcr.io"
       image_organization: "dev-container-repo"
       image_name: "babylon-nginx"
       tags: |
-        type=sha,event=branch
-        type=sha,event=pr
-        type=raw,value=test2,enable=${{ github.event_name != 'pull_request' }}
-        type=raw,value=test1,enable=${{ github.event_name == 'pull_request' }}
-        type=raw,value=${{ github.event_name == 'pull_request' }}
-        type=raw,value=${{ github.event_name != 'pull_request' }}
-        type=raw,value=
+            type=sha,event=branch
+            type=sha,event=pr
+            type=semver,pattern={{version}}
       # build information
       restore_artifact: "false"
       context: "."
