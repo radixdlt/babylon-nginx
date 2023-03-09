@@ -19,7 +19,6 @@ jobs:
       tags: |
             type=sha,event=branch
             type=sha,event=pr
-            type=semver,pattern={{version}}
       # build information
       restore_artifact: "false"
       context: "."
