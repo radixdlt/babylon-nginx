@@ -19,7 +19,7 @@ jobs:
       tags: |
         type=sha,event=branch
         type=sha,event=pr
-        type=raw,value=test2,enabled=${{ github.event_name == 'push' }}
+        type=raw,value=test2,enabled=${{ github.event_name != 'pull_request' }}
         type=raw,value=test1,enabled=${{ github.event_name == 'pull_request' }}
       # build information
       restore_artifact: "false"
