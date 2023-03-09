@@ -17,9 +17,10 @@ jobs:
       image_organization: "dev-container-repo"
       image_name: "babylon-nginx"
       tags: |
-            type=sha,event=branch
-            type=sha,event=pr
-            type=semver,pattern={{version}}
+        type=sha,event=branch
+        type=sha,event=pr
+        type=semver,pattern={{version}}
+        
       # build information
       restore_artifact: "false"
       context: "."
