@@ -9,7 +9,6 @@ name: Build artifacts
 
 jobs:
    build-push-container-gcr:
-    if: github.event_name == 'pull_request'
     name: GCR
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
     with:
