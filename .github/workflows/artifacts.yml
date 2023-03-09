@@ -19,8 +19,8 @@ jobs:
       tags: |
         type=sha,event=branch
         type=sha,event=pr
-        type=raw,value=test2,enabled=${{ github.event_name != 'pull_request' }}
-        type=raw,value=test1,enabled=${{ github.event_name == 'pull_request' }}
+        type=raw,value=test2,enable=${{ github.event_name != 'pull_request' }}
+        type=raw,value=test1,enable=${{ github.event_name == 'pull_request' }}
         type=raw,value=${{ github.event_name == 'pull_request' }}
         type=raw,value=${{ github.event_name != 'pull_request' }}
         type=raw,value=
