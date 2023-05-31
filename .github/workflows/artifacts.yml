@@ -36,15 +36,15 @@ jobs:
           asset_name: babylon-nginx-fullnode-conf.zip
           asset_content_type: application/zip
   
-  build-push-container-gcr:
+  build-push-container-private:
     if: github.event_name == 'pull_request'
-    name: GCR
+    name: Private
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
     with:
       # image information
-      image_registry: "eu.gcr.io"
-      image_organization: "dev-container-repo"
-      image_name: "babylon-nginx"
+      image_registry: "docker.io"
+      image_organization: "radixdlt"
+      image_name: "private-babylon-nginx"
       tag: ${{ github.head_ref }}
       # build information
       restore_artifact: "false"
