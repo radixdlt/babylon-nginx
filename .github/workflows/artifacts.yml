@@ -50,7 +50,7 @@ jobs:
       restore_artifact: "false"
       context: "."
       dockerfile: "./Dockerfile.alpine"
-      platforms: "linux/amd64"
+      platforms: "linux/amd64,linux/arm64"
       # optimizations
       cache_tag_suffix: "pr"
       enable_trivy: "true"
@@ -73,7 +73,7 @@ jobs:
       restore_artifact: "false"
       context: "."
       dockerfile: "./Dockerfile.alpine"
-      platforms: "linux/amd64"
+      platforms: "linux/amd64,linux/arm64"
       # optimizations
       cache_tag_suffix: "release"
       enable_dockerhub: "true"
