@@ -6,7 +6,7 @@ location /system {
     }
     proxy_pass ${DOLLAR}system_api;
     include conf.d/enable-caching-proxy.conf;
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
     proxy_cache radixdlt_hot;
     proxy_cache_valid 200 1s;
     include conf.d/enable-cors.conf;

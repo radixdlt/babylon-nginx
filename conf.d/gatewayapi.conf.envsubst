@@ -3,7 +3,7 @@ location = /gateway {
     proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
 }
 
 location = /gateway/metrics {
@@ -11,7 +11,7 @@ location = /gateway/metrics {
     proxy_pass ${DOLLAR}gateway_api_metrics/metrics;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
 }
 
 
@@ -20,7 +20,7 @@ location = /aggregator/metrics {
     proxy_pass ${DOLLAR}data_aggregator_metrics/metrics;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
 }
 
 location ~ ^/(token|account|validator|validators|transaction) {
@@ -28,5 +28,5 @@ location ~ ^/(token|account|validator|validators|transaction) {
     proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
 }

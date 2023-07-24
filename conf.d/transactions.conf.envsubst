@@ -4,5 +4,5 @@ location = /core/transactions {
     proxy_pass ${DOLLAR}core_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
 }
