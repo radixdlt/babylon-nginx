@@ -7,5 +7,5 @@ location /prometheus/metrics {
     proxy_pass ${DOLLAR}prometheus_metrics_api;
     include conf.d/enable-caching-proxy.conf;
     include conf.d/enable-cors.conf;
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
 }

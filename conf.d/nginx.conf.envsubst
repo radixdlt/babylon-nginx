@@ -14,7 +14,7 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
 
-    include conf.d/enable-compression;
+    include conf.d/enable-compression.conf;
 
      # log the bad requests:
      map ${DOLLAR}status ${DOLLAR}loggable {
@@ -104,7 +104,7 @@ http {
         listen 443 ssl;
         server_name localhost;
 
-        include conf.d/enable-compression;
+        include conf.d/enable-compression.conf;
 
         access_log $NGINX_LOGS_DIR/access_bad.log json_analytics if=${DOLLAR}loggable;
         access_log /dev/stdout json_analytics;
@@ -141,6 +141,6 @@ http {
             listen 9195;
             server_name localhost;
             include conf.d/nginx-status-location.conf;
-            include conf.d/enable-compression;
+            include conf.d/enable-compression.conf;
      }
 }
