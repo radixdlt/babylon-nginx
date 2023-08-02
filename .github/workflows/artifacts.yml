@@ -10,6 +10,58 @@ on:
 name: Build artifacts
 
 jobs:
+
+  snyk-monitor:
+    runs-on: ubuntu-latest
+#    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    needs:
+      - build-push-container-private
+      #- build-push-container-docker
+    permissions:
+      id-token: write
+      pull-requests: read
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
+      - uses: radixdlt/public-iac-resuable-artifacts/fetch-secrets@main
+        with:
+          role_name: ${{ secrets.AWS_ROLE_NAME_SNYK_SECRET }}
+          app_name: 'babylon-nginx'
+          step_name: 'snyk-monitor'
+          secret_prefix: 'SNYK'
+          secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
+          parse_json: true
+      - name: Enable Snyk online monitoring to check for vulnerabilities
+        uses: snyk/actions/node@b98d498629f1c368650224d6d212bf7dfa89e4bf # v0.4.0
+        with:
+          args: --all-projects --org=${{ env.SNYK_NETWORK_ORG_ID }} --target-reference=${{ github.ref_name }}
+          command: monitor
+
+  snyk-container-monitor:
+    runs-on: ubuntu-latest
+#    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    needs:
+      - build-push-container-private
+      #- build-push-container-docker
+    permissions:
+      id-token: write
+      pull-requests: read
+      contents: read
+      deployments: write
+    steps:
+      - uses: radixdlt/public-iac-resuable-artifacts/snyk-container-monitor@main
+        with:
+          role_name: ${{ secrets.AWS_ROLE_NAME_SNYK_SECRET }}
+          app_name: 'babylon-nginx'
+          step_name: 'snyk-container-monitor'
+          dockerhub_secret_name: ${{ secrets.AWS_SECRET_NAME_DOCKERHUB }}
+          snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
+          parse_json: true
+          snyk_org_id: ${{ secrets.SNYK_NETWORK_ORG_ID }}
+          image: docker.io/radixdlt/private-radix-dapp-toolkit:sha-${{ needs.build.outputs.tag }}
+          target_ref: ${{ github.ref_name }}
+
   upload-release:
     if: ${{ github.event_name == 'release' }}
     name: Upload nginx configuration artifacts
@@ -48,6 +100,8 @@ jobs:
       # optimizations
       cache_tag_suffix: "pr"
       enable_trivy: "true"
+      scan_image: true
+      snyk_target_ref: ${{ github.ref_name }}
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
@@ -72,6 +126,8 @@ jobs:
       cache_tag_suffix: "release"
       enable_dockerhub: "true"
       enable_trivy: "true"
+      scan_image: true
+      snyk_target_ref: ${{ github.ref_name }}
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
