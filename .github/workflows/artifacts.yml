@@ -84,10 +84,8 @@ jobs:
 
   snyk-monitor-devops:
     runs-on: ubuntu-latest
-    #    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     needs:
-      - build-push-container-private
-      #- build-push-container-docker
+      - build-push-container-docker
     permissions:
       id-token: write
       pull-requests: read
@@ -103,15 +101,13 @@ jobs:
           snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
           parse_json: true
           snyk_org_id: ${{ secrets.SNYK_DEVOPS_ORG_ID }}
-          image: docker.io/radixdlt/private-babylon-nginx:${{ github.head_ref }} # ${{ github.event.release.tag_name }}
+          image: docker.io/radixdlt/private-babylon-nginx:${{ github.event.release.tag_name }}
           target_ref: ${{ github.ref_name }}
 
   snyk-monitor-network:
     runs-on: ubuntu-latest
-    #    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     needs:
-      - build-push-container-private
-      #- build-push-container-docker
+      - build-push-container-docker
     permissions:
       id-token: write
       pull-requests: read
@@ -127,5 +123,5 @@ jobs:
           snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
           parse_json: true
           snyk_org_id: ${{ secrets.SNYK_NETWORK_ORG_ID }}
-          image: docker.io/radixdlt/private-babylon-nginx:${{ github.head_ref }} # ${{ github.event.release.tag_name }}
+          image: docker.io/radixdlt/private-babylon-nginx:${{ github.event.release.tag_name }}
           target_ref: ${{ github.ref_name }}
