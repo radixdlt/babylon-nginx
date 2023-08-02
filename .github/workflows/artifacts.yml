@@ -93,17 +93,18 @@ jobs:
       pull-requests: read
       contents: read
       deployments: write
-    uses: radixdlt/public-iac-resuable-artifacts/snyk-container-monitor@main
-    with:
-      role_name: ${{ secrets.AWS_ROLE_NAME_SNYK_SECRET }}
-      app_name: 'babylon-nginx'
-      step_name: 'snyk-container-monitor'
-      dockerhub_secret_name: ${{ secrets.AWS_SECRET_NAME_DOCKERHUB }}
-      snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
-      parse_json: true
-      snyk_org_id: ${{ secrets.SNYK_DEVOPS_ORG_ID }}
-      image: docker.io/radixdlt/private-babylon-nginx:${{ github.head_ref }} # ${{ github.event.release.tag_name }}
-      target_ref: ${{ github.ref_name }}
+    steps:
+      - uses: radixdlt/public-iac-resuable-artifacts/snyk-container-monitor@main
+        with:
+          role_name: ${{ secrets.AWS_ROLE_NAME_SNYK_SECRET }}
+          app_name: 'babylon-nginx'
+          step_name: 'snyk-container-monitor'
+          dockerhub_secret_name: ${{ secrets.AWS_SECRET_NAME_DOCKERHUB }}
+          snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
+          parse_json: true
+          snyk_org_id: ${{ secrets.SNYK_DEVOPS_ORG_ID }}
+          image: docker.io/radixdlt/private-babylon-nginx:${{ github.head_ref }} # ${{ github.event.release.tag_name }}
+          target_ref: ${{ github.ref_name }}
 
   snyk-container-monitor-network:
     runs-on: ubuntu-latest
@@ -116,14 +117,15 @@ jobs:
       pull-requests: read
       contents: read
       deployments: write
-    uses: radixdlt/public-iac-resuable-artifacts/snyk-container-monitor@main
-    with:
-      role_name: ${{ secrets.AWS_ROLE_NAME_SNYK_SECRET }}
-      app_name: 'babylon-nginx'
-      step_name: 'snyk-container-monitor'
-      dockerhub_secret_name: ${{ secrets.AWS_SECRET_NAME_DOCKERHUB }}
-      snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
-      parse_json: true
-      snyk_org_id: ${{ secrets.SNYK_NETWORK_ORG_ID }}
-      image: docker.io/radixdlt/private-babylon-nginx:${{ github.head_ref }} # ${{ github.event.release.tag_name }}
-      target_ref: ${{ github.ref_name }}
+    steps:
+      - uses: radixdlt/public-iac-resuable-artifacts/snyk-container-monitor@main
+        with:
+          role_name: ${{ secrets.AWS_ROLE_NAME_SNYK_SECRET }}
+          app_name: 'babylon-nginx'
+          step_name: 'snyk-container-monitor'
+          dockerhub_secret_name: ${{ secrets.AWS_SECRET_NAME_DOCKERHUB }}
+          snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
+          parse_json: true
+          snyk_org_id: ${{ secrets.SNYK_NETWORK_ORG_ID }}
+          image: docker.io/radixdlt/private-babylon-nginx:${{ github.head_ref }} # ${{ github.event.release.tag_name }}
+          target_ref: ${{ github.ref_name }}
