@@ -2,7 +2,7 @@ ARG ARCH=amd64
 FROM $ARCH/nginx:1.23-alpine
 LABEL maintainer="devops@radixdlt.com"
 
-RUN apk add --no-cache --update libressl=3.6.2-r0 wget=1.21.4-r0 openssl=3.0.9-r3 && \
+RUN apk add --no-cache --update libressl=3.6.2-r0 wget=1.21.4-r0 openssl=3.0.10-r0 && \
     apk del curl libcurl
 
 # good idea to persist this
