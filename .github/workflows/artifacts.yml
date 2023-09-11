@@ -141,3 +141,5 @@ jobs:
           snyk_org_id: ${{ secrets.SNYK_NETWORK_ORG_ID }}
           image: docker.io/radixdlt/private-babylon-nginx:${{ github.event.release.tag_name }}
           target_ref: ${{ github.ref_name }}
+
+          
