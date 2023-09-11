@@ -56,7 +56,6 @@ jobs:
     if: github.event_name == 'release'
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
     with:
-      environment: release
       # image information
       image_registry: "docker.io"
       image_organization: "radixdlt"
