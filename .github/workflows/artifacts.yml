@@ -81,7 +81,7 @@ jobs:
   snyk-monitor-devops:
     runs-on: ubuntu-latest
     needs:
-      - build-push-container-docker
+      - build-push-container-private
     permissions:
       id-token: write
       pull-requests: read
@@ -103,7 +103,7 @@ jobs:
   snyk-monitor-network:
     runs-on: ubuntu-latest
     needs:
-      - build-push-container-docker
+      - build-push-container-private
     permissions:
       id-token: write
       pull-requests: read
