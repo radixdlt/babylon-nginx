@@ -51,6 +51,26 @@ jobs:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
+
+
+  oidc_debug_test:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    name: A test of the oidc debugger
+    steps:
+      - name: Checkout actions-oidc-debugger
+        uses: actions/checkout@v3
+        with:
+          repository: github/actions-oidc-debugger
+          ref: main
+          path: ./.github/actions/actions-oidc-debugger
+      - name: Debug OIDC Claims
+        uses: ./.github/actions/actions-oidc-debugger
+        with:
+          audience: 'https://github.com/github'
+
   build-push-container-docker:
     name: Dockerhub
     if: github.event_name == 'release'
