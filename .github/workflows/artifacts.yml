@@ -50,6 +50,11 @@ jobs:
     secrets:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+    permissions:
+      id-token: write
+      pull-requests: read
+      contents: read
+      deployments: write
 
   build-push-container-docker:
     name: Dockerhub
@@ -77,6 +82,11 @@ jobs:
       workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       role_to_assume: ${{ secrets.DOCKERHUB_RELEASER_ROLE }}
+    permissions:
+      id-token: write
+      pull-requests: read
+      contents: read
+      deployments: write
 
   snyk-monitor-devops:
     runs-on: ubuntu-latest
