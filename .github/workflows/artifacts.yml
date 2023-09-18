@@ -30,7 +30,7 @@ jobs:
   build-push-container-private:
     if: github.event_name == 'pull_request'
     name: Private
-    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
+    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@chore/revert-aws-upgrade
     with:
       # image information
       image_registry: "docker.io"
@@ -54,7 +54,7 @@ jobs:
   build-push-container-docker:
     name: Dockerhub
     if: github.event_name == 'release'
-    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@main
+    uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@chore/revert-aws-upgrade
     with:
       environment: release
       # image information
