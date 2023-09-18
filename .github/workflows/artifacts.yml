@@ -52,9 +52,7 @@ jobs:
       service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
     permissions:
       id-token: write
-      pull-requests: write
       contents: read
-      deployments: write
 
   build-push-container-docker:
     name: Dockerhub
@@ -84,9 +82,7 @@ jobs:
       role_to_assume: ${{ secrets.DOCKERHUB_RELEASER_ROLE }}
     permissions:
       id-token: write
-      pull-requests: write
       contents: read
-      deployments: write
 
   snyk-monitor-devops:
     runs-on: ubuntu-latest
