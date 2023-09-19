@@ -23,7 +23,7 @@ location = /aggregator/metrics {
     include conf.d/enable-compression.conf;
 }
 
-location ~ ^/(token|account|validator|validators|transaction|state|stream|status|statistics) {
+location ~ ^/(token|account|validator|validators|transaction|state|stream|status|statistics)/ {
     ${ENABLE_GATEWAY_BEHIND_AUTH}
     proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
