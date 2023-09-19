@@ -3,10 +3,10 @@
 
 export RADIXDLT_VALIDATOR_HOST=127.0.0.1
 export RADIXDLT_VALIDATOR_TCP_PORT=30001
-export RADIXDLT_CORE_API_PORT=3332
+export RADIXDLT_CORE_API_PORT=3333
 export NGINX_VALIDATOR_TCP_PORT=30000
 export NGINX_CLIENT_HTTP_PORT=8080
-export NGINX_NODE_HTTP_PORT=3333
+export NGINX_NODE_HTTP_PORT=3334
 
 #Remove the nginx configuration part and generate nginx.conf
 nginx_file_name="nginx-fullnode.conf"
