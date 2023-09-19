@@ -1,3 +1,4 @@
+load_module /usr/lib/nginx/modules/ngx_stream_module.so;
 user nginx;
 worker_processes 1;
 
@@ -11,7 +12,6 @@ events {
 ${INCLUDE_RADIXDLT_ENABLE_TCP_CORE_PROXY}
 
 http {
-    include /etc/nginx/mime.types;
     default_type application/octet-stream;
 
     include conf.d/enable-compression.conf;
