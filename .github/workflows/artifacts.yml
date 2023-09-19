@@ -9,6 +9,8 @@ on:
 
 name: Build artifacts
 
+permissions: write-all
+
 jobs:
 
   upload-release:
@@ -29,7 +31,6 @@ jobs:
   
   build-push-container-private:
     if: github.event_name == 'pull_request'
-    permissions: write-all
     name: Private
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@test-aws-v
     with:
