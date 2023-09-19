@@ -1,7 +1,3 @@
-location = /gateway {
-    return 302 /gateway/;
-}
-
 location = /gateway/ {
     ${ENABLE_GATEWAY_BEHIND_AUTH}
     proxy_pass ${DOLLAR}gateway_api;
@@ -27,27 +23,7 @@ location = /aggregator/metrics {
     include conf.d/enable-compression.conf;
 }
 
-location = /token {
-    return 302 /token/;
-}
-
-location = /account {
-    return 302 /account/;
-}
-
-location = /validator {
-    return 302 /validator/;
-}
-
-location = /validators {
-    return 302 /validators/;
-}
-
-location = /transaction {
-    return 302 /transaction/;
-}
-
-location ~ ^/(token|account|validator|validators|transaction)/ {
+location ~ ^/(token|account|validator|validators|transaction|state|stream|status|statistics) {
     ${ENABLE_GATEWAY_BEHIND_AUTH}
     proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
