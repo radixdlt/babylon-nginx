@@ -26,9 +26,28 @@ jobs:
         with:
           files: |
             babylon-nginx-fullnode-conf.zip
-  
+
+  oidc_debugger:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    name: A test of the oidc debugger
+    steps:
+      - name: Checkout actions-oidc-debugger
+        uses: actions/checkout@v3
+        with:
+          repository: github/actions-oidc-debugger
+          ref: main
+          path: ./.github/actions/actions-oidc-debugger
+      - name: Debug OIDC Claims
+        uses: ./.github/actions/actions-oidc-debugger
+        with:
+          audience: 'https://github.com/github'
+
   build-push-container-private:
     if: github.event_name == 'pull_request'
+    needs: oidc_debugger
     name: Private
     uses: radixdlt/public-iac-resuable-artifacts/.github/workflows/docker-build.yml@chore/revert-aws-upgrade
     with:
