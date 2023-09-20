@@ -1,5 +1,7 @@
 location = /gateway/ {
     ${ENABLE_GATEWAY_BEHIND_AUTH}
+    
+    rewrite ^/gateway/(.*) /$1 break;
     proxy_pass ${DOLLAR}gateway_api;
     include conf.d/enable-websocket.conf;
     include conf.d/enable-cors.conf;
