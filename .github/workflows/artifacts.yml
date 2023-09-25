@@ -96,7 +96,7 @@ jobs:
           snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
           parse_json: true
           snyk_org_id: ${{ secrets.SNYK_DEVOPS_ORG_ID }}
-          image: docker.io/radixdlt/private-babylon-nginx:${{ github.event.release.tag_name }}
+          image: docker.io/radixdlt/private-babylon-nginx:${{ needs.build-push-container-private.outputs.default_tag }}
           target_ref: ${{ github.ref_name }}
 
   snyk-monitor-network:
@@ -118,5 +118,5 @@ jobs:
           snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
           parse_json: true
           snyk_org_id: ${{ secrets.SNYK_NETWORK_ORG_ID }}
-          image: docker.io/radixdlt/private-babylon-nginx:${{ github.event.release.tag_name }}
+          image: docker.io/radixdlt/private-babylon-nginx:${{ needs.build-push-container-private.outputs.default_tag }}
           target_ref: ${{ github.ref_name }}
