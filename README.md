@@ -2,6 +2,10 @@
 
 This repo contains configuration files needed for running RadixDLT nodes using nginx as a reverse proxy.
 
+## License
+
+The Babylon nginx configuration/code is released under the [Radix License](LICENSE). Binaries/Executable components are licensed under the [Radix Software EULA](http://www.radixdlt.com/terms/genericEULA).
+
 # Artifacts for standalone nginx 
 For node runners that do not want to use the radixdlt/radixdlt-nginx there is a script that will generate
 the configuration for Archive and Fullnodes.
