@@ -22,7 +22,7 @@ jobs:
         run: |
           bash generate_artifact.sh
       - name: Upload Full Node Release Asset
-        uses: softprops/action-gh-release@c9b46fe7aad9f02afd89b12450b780f52dacfb2d
+        uses: RDXWorks-actions/action-gh-release@master
         with:
           files: |
             babylon-nginx-fullnode-conf.zip
