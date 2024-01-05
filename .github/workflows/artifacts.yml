@@ -36,7 +36,9 @@ jobs:
       image_registry: "docker.io"
       image_organization: "radixdlt"
       image_name: "private-babylon-nginx"
-      tag: ${{ github.head_ref }}
+      tags: |
+        ${{ github.head_ref }}
+        development-latest
       # build information
       restore_artifact: "false"
       context: "."
