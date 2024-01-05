@@ -36,7 +36,9 @@ jobs:
       image_registry: "docker.io"
       image_organization: "radixdlt"
       image_name: "private-babylon-nginx"
-      tag: ${{ github.head_ref }}
+      tags: |
+        ${{ github.head_ref }}
+        development-latest
       # build information
       restore_artifact: "false"
       context: "."
@@ -44,7 +46,6 @@ jobs:
       platforms: "linux/amd64,linux/arm64"
       # optimizations
       cache_tag_suffix: "pr"
-      enable_trivy: "true"
       scan_image: true
       snyk_target_ref: ${{ github.ref_name }}
     secrets:
@@ -69,7 +70,6 @@ jobs:
       # optimizations
       cache_tag_suffix: "release"
       enable_dockerhub: "true"
-      enable_trivy: "true"
       scan_image: true
       snyk_target_ref: ${{ github.ref_name }}
     secrets:
