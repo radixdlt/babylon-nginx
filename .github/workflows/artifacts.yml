@@ -48,9 +48,6 @@ jobs:
       cache_tag_suffix: "pr"
       scan_image: true
       snyk_target_ref: ${{ github.ref_name }}
-    secrets:
-      workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
-      service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
   build-push-container-docker:
     name: Dockerhub
@@ -61,7 +58,9 @@ jobs:
       image_registry: "docker.io"
       image_organization: "radixdlt"
       image_name: "babylon-nginx"
-      tag: ${{ github.event.release.tag_name }}
+      tags: |
+        ${{ github.event.release.tag_name }}
+        development-latest
       # build information
       restore_artifact: "false"
       context: "."
@@ -73,8 +72,6 @@ jobs:
       scan_image: true
       snyk_target_ref: ${{ github.ref_name }}
     secrets:
-      workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDP }}
-      service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       role_to_assume: ${{ secrets.DOCKERHUB_RELEASER_ROLE }}
 
   snyk-monitor-devops:
