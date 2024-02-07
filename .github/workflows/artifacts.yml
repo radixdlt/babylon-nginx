@@ -9,6 +9,12 @@ on:
 
 name: Build artifacts
 
+permissions:
+  id-token: write
+  pull-requests: write
+  packages: write
+  contents: read
+
 jobs:
 
   upload-release:

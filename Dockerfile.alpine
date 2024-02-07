@@ -1,7 +1,7 @@
 FROM nginx:1.23-alpine
 LABEL maintainer="devops@radixdlt.com"
 
-RUN apk add --no-cache --update libressl=3.6.2-r0 wget=1.21.4-r0 openssl=3.0.12-r3 && \
+RUN apk add --no-cache --update libressl=3.6.2-r0 wget=1.21.4-r0 openssl=3.0.12-r4 && \
     apk del curl libcurl
 
 # good idea to persist this
