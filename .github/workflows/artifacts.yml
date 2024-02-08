@@ -110,7 +110,7 @@ jobs:
           dockerhub_secret_name: ${{ secrets.AWS_SECRET_NAME_DOCKERHUB }}
           snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
           snyk_org_id: ${{ secrets.SNYK_DEVOPS_ORG_ID }}
-          image: docker.io/radixdlt/private-babylon-nginx:${{ needs.build-push-container-docker.outputs.default_tag }}
+          image: docker.io/radixdlt/babylon-nginx:${{ needs.build-push-container-docker.outputs.default_tag }}
           target_ref: ${{ github.ref_name }}
 
   snyk-monitor-network:
@@ -143,5 +143,5 @@ jobs:
           dockerhub_secret_name: ${{ secrets.AWS_SECRET_NAME_DOCKERHUB }}
           snyk_secret_name: ${{ secrets.AWS_SECRET_NAME_SNYK }}
           snyk_org_id: ${{ secrets.SNYK_NETWORK_ORG_ID }}
-          image: docker.io/radixdlt/private-babylon-nginx:${{ needs.build-push-container-docker.outputs.default_tag }}
+          image: docker.io/radixdlt/babylon-nginx:${{ needs.build-push-container-docker.outputs.default_tag }}
           target_ref: ${{ github.ref_name }}
