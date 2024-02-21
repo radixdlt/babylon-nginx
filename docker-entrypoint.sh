@@ -101,15 +101,7 @@ conf_file="metrics"
 export INCLUDE_RADIXDLT_METRICS_API_ENABLE="include conf.d/${conf_file}.conf;"
 DOLLAR='$' envsubst </etc/nginx/conf.d/${conf_file}.conf.envsubst >/etc/nginx/conf.d/${conf_file}.conf
 
-
 DOLLAR='$' envsubst </etc/nginx/conf.d/nginx.conf.envsubst >/etc/nginx/nginx.conf
-
-# nginx configuration
-# Generate dhparam.pem if not pre-configured
-if [ ! -f /etc/nginx/secrets/dhparam.pem ]; then
-    # TODO: increase to 2048 for Beta
-    openssl dhparam -out /etc/nginx/secrets/dhparam.pem  1024
-fi
 
 # Generate certificates if not pre-configured
 if [ ! -f /etc/nginx/secrets/server.pem -o ! -f /etc/nginx/secrets/server.key ]; then
