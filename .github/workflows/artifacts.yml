@@ -51,7 +51,7 @@ jobs:
       dockerfile: "./Dockerfile.alpine"
       platforms: "linux/amd64,linux/arm64"
       # optimizations
-      cache_tag_suffix: "pr2"
+      cache_tag_suffix: "pr"
       scan_image: true
       snyk_target_ref: ${{ github.ref_name }}
 
