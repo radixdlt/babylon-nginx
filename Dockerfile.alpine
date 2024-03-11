@@ -1,8 +1,12 @@
 FROM nginx:1.25-alpine
 LABEL maintainer="devops@radixdlt.com"
 
-RUN apk add --no-cache --update libressl=3.7.3-r0 wget=1.21.4-r0 openssl=3.1.4-r5 && \
-    apk del curl libcurl
+RUN apk add --no-cache --update \
+    libressl=3.7.3-r0 \
+    wget=1.21.4-r0 \
+    openssl=3.1.4-r5 \
+    nginx-mod-http-geoip==1.24.0-r7 \
+    && apk del curl libcurl
 
 # good idea to persist this
 VOLUME ["/etc/nginx/secrets"]
