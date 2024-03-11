@@ -4,6 +4,8 @@ worker_processes 1;
 error_log /dev/stderr notice;
 pid /var/run/nginx.pid;
 
+include /etc/nginx/modules/*.conf;
+
 events {
     worker_connections 65535;
 }
