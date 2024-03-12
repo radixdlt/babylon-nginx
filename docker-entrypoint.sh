@@ -19,7 +19,7 @@ generate_cloudflare_ip_conf(){
 set_default_rate_limits(){
   [ "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" ] || export RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS="true"
   if [[ "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" == true || "$RADIXDLT_ENABLE_DEFAULT_RATE_LIMITS" == "True" ]];then
-    export INCLUDE_DEFAULT_RATE_LIMITS="limit_req zone=perip;"
+    export INCLUDE_DEFAULT_RATE_LIMITS="limit_req zone=perip burst=25 nodelay;"
   fi
 }
 
