@@ -16,7 +16,7 @@ mv ${PWD}/nginx.conf ${PWD}/$nginx_file_name
 sed -i "s|user nginx;|include \/etc\/nginx\/modules-enabled\/*.conf;|g" ${PWD}/$nginx_file_name
 #Change /dev/stdout
 sed -i "s|\/dev\/stdout|\/var\/log\/nginx\/access.log|g" ${PWD}/$nginx_file_name
-zip -r babylon-nginx-fullnode-conf.zip conf.d/ nginx-fullnode.conf
+zip -r babylon-nginx-fullnode-conf.zip conf.d/ certs/ nginx-fullnode.conf
 #Cleanup
 rm nginx-fullnode.conf
 
