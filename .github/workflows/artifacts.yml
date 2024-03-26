@@ -9,6 +9,9 @@ on:
 
 name: Build artifacts
 
+env:
+  BABYLON_NODECLI_VERSION: 2.1.2
+
 permissions:
   id-token: write
   pull-requests: write
@@ -80,6 +83,103 @@ jobs:
     secrets:
       role_to_assume: ${{ secrets.DOCKERHUB_RELEASER_ROLE }}
 
+  test-userflow-docker-core-gateway-same-host:
+    needs:
+      - build-push-container-private
+    runs-on: gh-ephemeral-nodecli-docker-runner
+    steps:
+      - name: Checkout
+        uses: RDXWorks-actions/checkout@main
+        with:
+          fetch-depth: 0
+      - name: "Configure AWS credentials (Private)"
+        uses: RDXWorks-actions/configure-aws-credentials@main
+        with:
+          role-to-assume: arn:aws:iam::${{secrets.SECRETS_ACCOUNT_ID}}:role/gh-common-secrets-read-access
+          aws-region: eu-west-2
+      - name: Read secrets from AWS Secrets Manager into environment variables (Private)
+        uses: RDXWorks-actions/aws-secretsmanager-get-secrets@main
+        with:
+          secret-ids: |
+            DOCKERHUB_PRIVATE, github-actions/common/dockerhub-credentials
+          parse-json-secrets: true
+      - name: Login to Docker Hub (Private)
+        uses: RDXWorks-actions/login-action@master
+        with:
+          username: ${{env.DOCKERHUB_PRIVATE_USERNAME}}
+          password: ${{env.DOCKERHUB_PRIVATE_TOKEN}}
+      - name: Download packaged cli
+        run: |
+          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/${{env.BABYLON_NODECLI_VERSION}}/babylonnode-ubuntu-22.04
+          chmod +x babylonnode
+      - name: Get dependencies
+        run: |
+          chmod +x ./babylonnode
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client jq docker-compose
+          ./babylonnode docker dependencies
+      - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
+        run: |
+          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-docker-all-same-host.sh -O install-docker-all-same-host.sh
+          chmod +x  ./install-docker-all-same-host.sh
+          ./install-docker-all-same-host.sh
+        env:
+          NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_GATEWAY_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          SEED_NODE: ${{ vars.SEED_NODE }}
+          NETWORK_ID: ${{ vars.NETWORK_ID }}
+          NETWORK_NAME: ${{ vars.NETWORK_NAME }}
+          NGINX_DOCKER_REPO_OVERRIDE: radixdlt/private-babylon-nginx
+          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.head_ref }}
+          NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
+          
+  test-userflow-systemd-simple:
+    runs-on: gh-ephemeral-nodecli-systemd-runner
+    steps:
+      - name: Checkout
+        uses: RDXWorks-actions/checkout@main
+        with:
+          fetch-depth: 0
+      - name: Download packaged cli
+        run: |
+          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/${{env.BABYLON_NODECLI_VERSION}}/babylonnode-ubuntu-22.04
+          chmod +x babylonnode
+      - name: Get dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq zip
+          chmod +x ./babylonnode
+      - name: Serve Files
+        uses: RDXWorks-actions/http-server-action@master
+        with:
+          directory: ${{ github.workspace }}
+          port: 9999
+      - name: "Generate artifact"
+        run: |
+          echo "generating artifact"
+          bash generate_artifact.sh
+      - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
+        run: |
+          export DOCKER_COMPOSE_LOCATION="/usr/local/bin/docker-compose"
+          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-systemd-simple.sh -O install-systemd-simple.sh
+          chmod +x  ./install-systemd-simple.sh
+          ./install-systemd-simple.sh
+        env:
+          NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_GATEWAY_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          SEED_NODE: ${{ vars.SEED_NODE }}
+          NETWORK_ID: ${{ vars.NETWORK_ID }}
+          NETWORK_NAME: ${{ vars.NETWORK_NAME }}
+          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.head_ref }}
+          NGINX_BINARY_OVERIDE: http://127.0.0.1:9999/babylon-nginx-fullnode-conf.zip
+          # NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
+    
   snyk-monitor-devops:
     if: always()
     runs-on: ubuntu-latest
