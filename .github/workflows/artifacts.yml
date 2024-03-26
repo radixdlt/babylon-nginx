@@ -120,7 +120,7 @@ jobs:
           ./babylonnode docker dependencies
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
-          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main//Users/kim.fehrs/projects/rdx/radixdlt-org/babylon-nodecli/node-runner-cli/tests/userflows/install-docker-all-same-host.sh -O install-docker-all-same-host.sh
+          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-docker-all-same-host.sh -O install-docker-all-same-host.sh
           chmod +x  ./install-docker-all-same-host.sh
           ./install-docker-all-same-host.sh
         env:
