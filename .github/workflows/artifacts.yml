@@ -10,7 +10,7 @@ on:
 name: Build artifacts
 
 env:
-  BABYLON_NODECLI_VERSION: 2.1.1
+  BABYLON_NODECLI_VERSION: 0.0.0
 
 permissions:
   id-token: write
@@ -117,12 +117,12 @@ jobs:
           chmod +x ./babylonnode
           sudo apt-get update
           sudo apt-get install -y postgresql-client jq docker-compose
-          sudo snap install yq
           ./babylonnode docker dependencies
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
-          chmod +x  ./tests/e2e-docker-nodecli.sh
-          ./tests/e2e-docker-nodecli.sh
+          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main//Users/kim.fehrs/projects/rdx/radixdlt-org/babylon-nodecli/node-runner-cli/tests/userflows/install-docker-all-same-host.sh -O install-docker-all-same-host.sh
+          chmod +x  ./install-docker-all-same-host.sh
+          ./install-docker-all-same-host.sh
         env:
           NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
           NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
@@ -132,7 +132,7 @@ jobs:
           SEED_NODE: ${{ vars.SEED_NODE }}
           NETWORK_ID: ${{ vars.NETWORK_ID }}
           NETWORK_NAME: ${{ vars.NETWORK_NAME }}
-          # NGINX_DOCKER_REPO_OVERRIDE: radixdlt/private-babylon-nginx
+          NGINX_DOCKER_REPO_OVERRIDE: radixdlt/private-babylon-nginx
           RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.head_ref }}
           NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
           
@@ -164,9 +164,9 @@ jobs:
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
           export DOCKER_COMPOSE_LOCATION="/usr/local/bin/docker-compose"
-          # wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-systemd-simple.sh -O install-systemd-simple.sh
-          chmod +x  ./tests/e2e-systemd-nodecli.sh
-          ./tests/e2e-systemd-nodecli.sh
+          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-systemd-simple.sh -O install-systemd-simple.sh
+          chmod +x  ./install-systemd-simple.sh
+          ./install-systemd-simple.sh
         env:
           NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
           NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
