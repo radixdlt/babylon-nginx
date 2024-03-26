@@ -137,9 +137,6 @@ jobs:
           NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
           
   test-userflow-systemd-simple:
-    # if: github.event_name == 'release'
-    # needs:
-    #   - upload-release
     runs-on: gh-ephemeral-nodecli-systemd-runner
     steps:
       - name: Checkout
@@ -167,9 +164,9 @@ jobs:
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
           export DOCKER_COMPOSE_LOCATION="/usr/local/bin/docker-compose"
-          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-systemd-simple.sh -O install-systemd-simple.sh
-          chmod +x  ./install-systemd-simple.sh
-          ./install-systemd-simple.sh
+          # wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-systemd-simple.sh -O install-systemd-simple.sh
+          chmod +x  ./tests/e2e-systemd-nodecli.sh
+          ./tests/e2e-systemd-nodecli.sh
         env:
           NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
           NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
