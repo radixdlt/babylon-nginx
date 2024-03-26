@@ -84,9 +84,8 @@ jobs:
       role_to_assume: ${{ secrets.DOCKERHUB_RELEASER_ROLE }}
 
   test-userflow-docker-core-gateway-same-host:
-    if: github.event_name == 'release'
     needs:
-      - build-push-container-docker
+      - build-push-container-private
     runs-on: gh-ephemeral-nodecli-docker-runner
     steps:
       - name: Checkout
@@ -121,9 +120,8 @@ jobs:
           ./babylonnode docker dependencies
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
-          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-docker-all-same-host.sh -O install-docker-all-same-host.sh
-          chmod +x  ./install-docker-all-same-host.sh
-          ./install-docker-all-same-host.sh
+          chmod +x  ./tests/e2e-docker-nodecli.sh
+          ./tests/e2e-docker-nodecli.sh
         env:
           NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
           NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
@@ -133,8 +131,8 @@ jobs:
           SEED_NODE: ${{ vars.SEED_NODE }}
           NETWORK_ID: ${{ vars.NETWORK_ID }}
           NETWORK_NAME: ${{ vars.NETWORK_NAME }}
-          NGINX_DOCKER_REPO_OVERRIDE: radixdlt/private-babylon-nginx
-          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.event.release.tag_name }}
+          # NGINX_DOCKER_REPO_OVERRIDE: radixdlt/private-babylon-nginx
+          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.head_ref }}
           NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
           
   test-userflow-systemd-simple:
@@ -177,7 +175,7 @@ jobs:
           SEED_NODE: ${{ vars.SEED_NODE }}
           NETWORK_ID: ${{ vars.NETWORK_ID }}
           NETWORK_NAME: ${{ vars.NETWORK_NAME }}
-          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.event.release.tag_name }}
+          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.head_ref }}
           NGINX_BINARY_OVERIDE: http://127.0.0.1:9999/babylon-nginx-fullnode-conf.zip
           # NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
     
