@@ -80,6 +80,82 @@ jobs:
     secrets:
       role_to_assume: ${{ secrets.DOCKERHUB_RELEASER_ROLE }}
 
+  test-userflow-docker-core-gateway-same-host:
+    if: github.event_name == 'release'
+    needs:
+      - build-push-container-docker
+    runs-on: gh-ephemeral-nodecli-docker-runner
+    steps:
+      - name: Checkout
+        uses: RDXWorks-actions/checkout@main
+        with:
+          fetch-depth: 0
+      - name: Download packaged cli
+        run: |
+          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/2.1.1/babylonnode-ubuntu-22.04
+          chmod +x babylonnode
+      - name: Get dependencies
+        run: |
+          chmod +x ./babylonnode
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client jq docker-compose
+          ./babylonnode docker dependencies
+      - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
+        run: |
+          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-docker-all-same-host.sh -O install-docker-all-same-host.sh
+          chmod +x  ./install-docker-all-same-host.sh
+          ./install-docker-all-same-host.sh
+        env:
+          NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_GATEWAY_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          SEED_NODE: ${{ vars.SEED_NODE }}
+          NETWORK_ID: ${{ vars.NETWORK_ID }}
+          NETWORK_NAME: ${{ vars.NETWORK_NAME }}
+          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.event.release.tag_name }}
+          NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
+          
+  test-userflow-systemd-simple:
+    if: github.event_name == 'release'
+    needs:
+      - upload-release
+    runs-on: gh-ephemeral-nodecli-systemd-runner
+    steps:
+      - name: Checkout
+        uses: RDXWorks-actions/checkout@main
+        with:
+          fetch-depth: 0
+      - name: Download packaged cli
+        run: |
+          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/2.1.1/babylonnode-ubuntu-22.04
+          chmod +x babylonnode
+      - name: Get dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          chmod +x ./babylonnode
+      #          Expect dependencies to be installed before. Since the command is interactive
+      #          ./babylonnode systemd dependencies
+      - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
+        run: |
+          export DOCKER_COMPOSE_LOCATION="/usr/local/bin/docker-compose"
+          wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-systemd-simple.sh -O install-systemd-simple.sh
+          chmod +x  ./install-systemd-simple.sh
+          ./install-systemd-simple.sh
+        env:
+          NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_METRICS_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          NGINX_GATEWAY_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
+          SEED_NODE: ${{ vars.SEED_NODE }}
+          NETWORK_ID: ${{ vars.NETWORK_ID }}
+          NETWORK_NAME: ${{ vars.NETWORK_NAME }}
+          RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.event.release.tag_name }}
+          NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
+    
   snyk-monitor-devops:
     if: always()
     runs-on: ubuntu-latest
