@@ -162,7 +162,7 @@ jobs:
           echo "generating artifact"
           bash generate_artifact.sh
           echo "Starting a small webservice to serve nginx config."
-          python -m http.server 9999 --bind 127.0.0.1 &
+          python3 -m http.server 9999 --bind 127.0.0.1 &
           echo "test" > test
           curl https://127.0.0.1/test
           ./install-systemd-simple.sh
