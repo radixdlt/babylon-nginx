@@ -154,7 +154,7 @@ jobs:
       - name: Get dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq
+          sudo apt-get install -y jq zip python
           chmod +x ./babylonnode
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
