@@ -93,6 +93,22 @@ jobs:
         uses: RDXWorks-actions/checkout@main
         with:
           fetch-depth: 0
+      - name: "Configure AWS credentials (Private)"
+        uses: RDXWorks-actions/configure-aws-credentials@main
+        with:
+          role-to-assume: arn:aws:iam::${{secrets.SECRETS_ACCOUNT_ID}}:role/gh-common-secrets-read-access
+          aws-region: eu-west-2
+      - name: Read secrets from AWS Secrets Manager into environment variables (Private)
+        uses: RDXWorks-actions/aws-secretsmanager-get-secrets@main
+        with:
+          secret-ids: |
+            DOCKERHUB_PRIVATE, github-actions/common/dockerhub-credentials
+          parse-json-secrets: true
+      - name: Login to Docker Hub (Private)
+        uses: RDXWorks-actions/login-action@master
+        with:
+          username: ${{env.DOCKERHUB_PRIVATE_USERNAME}}
+          password: ${{env.DOCKERHUB_PRIVATE_TOKEN}}
       - name: Download packaged cli
         run: |
           wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/${{env.BABYLON_NODECLI_VERSION}}/babylonnode-ubuntu-22.04
@@ -117,6 +133,7 @@ jobs:
           SEED_NODE: ${{ vars.SEED_NODE }}
           NETWORK_ID: ${{ vars.NETWORK_ID }}
           NETWORK_NAME: ${{ vars.NETWORK_NAME }}
+          NGINX_DOCKER_REPO_OVERRIDE: radixdlt/private-babylon-nginx
           RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.event.release.tag_name }}
           NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
           
@@ -148,6 +165,8 @@ jobs:
           bash generate_artifact.sh
           echo "Starting a small webservice to serve nginx config."
           python -m http.server 9999 --bind 127.0.0.1 &
+          echo "test" > test
+          curl https://127.0.0.1/test
           ./install-systemd-simple.sh
         env:
           NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
@@ -159,7 +178,7 @@ jobs:
           NETWORK_ID: ${{ vars.NETWORK_ID }}
           NETWORK_NAME: ${{ vars.NETWORK_NAME }}
           RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.event.release.tag_name }}
-          NGINX_BINARY_OVERIDE: http://localhost:9999/babylon-nginx-fullnode-conf.zip
+          NGINX_BINARY_OVERIDE: http://127.0.0.1:9999/babylon-nginx-fullnode-conf.zip
           # NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
     
   snyk-monitor-devops:
