@@ -159,7 +159,7 @@ jobs:
           NETWORK_ID: ${{ vars.NETWORK_ID }}
           NETWORK_NAME: ${{ vars.NETWORK_NAME }}
           RADIXDLT_NGINX_VERSION_OVERRIDE: ${{ github.event.release.tag_name }}
-          NGINX_BINARY_OVERIDE: http://localhost:999/babylon-nginx-fullnode-conf.zip
+          NGINX_BINARY_OVERIDE: http://localhost:9999/babylon-nginx-fullnode-conf.zip
           # NGINX_BINARY_OVERIDE: "https://github.com/radixdlt/babylon-nginx/releases/download/${{ github.event.release.tag_name }}/babylon-nginx-fullnode-conf.zip"
     
   snyk-monitor-devops:
