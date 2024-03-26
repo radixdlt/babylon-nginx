@@ -9,6 +9,9 @@ on:
 
 name: Build artifacts
 
+env:
+  BABYLON_NODECLI_VERSION: ${{BABYLON_NODECLI_VERSION}}
+
 permissions:
   id-token: write
   pull-requests: write
@@ -92,7 +95,7 @@ jobs:
           fetch-depth: 0
       - name: Download packaged cli
         run: |
-          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/2.1.1/babylonnode-ubuntu-22.04
+          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/${{BABYLON_NODECLI_VERSION}}/babylonnode-ubuntu-22.04
           chmod +x babylonnode
       - name: Get dependencies
         run: |
@@ -129,15 +132,13 @@ jobs:
           fetch-depth: 0
       - name: Download packaged cli
         run: |
-          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/2.1.1/babylonnode-ubuntu-22.04
+          wget -O babylonnode https://github.com/radixdlt/babylon-nodecli/releases/download/${{BABYLON_NODECLI_VERSION}}/babylonnode-ubuntu-22.04
           chmod +x babylonnode
       - name: Get dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
           chmod +x ./babylonnode
-      #          Expect dependencies to be installed before. Since the command is interactive
-      #          ./babylonnode systemd dependencies
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
           export DOCKER_COMPOSE_LOCATION="/usr/local/bin/docker-compose"
