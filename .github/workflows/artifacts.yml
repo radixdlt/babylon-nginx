@@ -164,7 +164,7 @@ jobs:
           echo "Starting a small webservice to serve nginx config."
           python3 -m http.server 9999 --bind 127.0.0.1 &
           echo "test" > test
-          curl https://127.0.0.1/test
+          curl https://127.0.0.1:9999/test
           ./install-systemd-simple.sh
         env:
           NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
