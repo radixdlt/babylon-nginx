@@ -165,7 +165,7 @@ jobs:
           curl http://127.0.0.1:9999/test
           echo "generating artifact"
           bash generate_artifact.sh
-          curl http://127.0.0.1:9999/babylon-nginx-fullnode-conf.zip
+          curl http://127.0.0.1:9999/babylon-nginx-fullnode-conf.zip 
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
           export DOCKER_COMPOSE_LOCATION="/usr/local/bin/docker-compose"
