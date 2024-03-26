@@ -38,7 +38,7 @@ ls -la /home/ubuntu/
   -v "" \
   -a
 ls -la $HOME/babylon-node-config
-yq e -i '.common_config.nginx_settings.repo = "radixdlt/private-babylon-nginx"' tests/example_config.yaml
+yq e -i '.common_config.nginx_settings.repo = "radixdlt/private-babylon-nginx"' $HOME/babylon-node-config/config.yaml
 cat $HOME/babylon-node-config/config.yaml
 
 echo "unset version override"
