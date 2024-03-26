@@ -152,19 +152,25 @@ jobs:
       - name: Get dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq zip python3
+          sudo apt-get install -y jq zip
           chmod +x ./babylonnode
+      - name: Serve Files
+        uses: Eun/http-server-action@v1
+        with:
+          directory: ${{ github.workspace }}
+          port: 9999
+      - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
+        run: |
+          echo "test" > test
+          curl http://127.0.0.1:9999/test
+          echo "generating artifact"
+          bash generate_artifact.sh
+          curl http://127.0.0.1:9999/babylon-nginx-fullnode-conf.zip
       - name: "Execute User Flow: Install Core, Gateway and Monitoring on the same host"
         run: |
           export DOCKER_COMPOSE_LOCATION="/usr/local/bin/docker-compose"
           wget https://raw.githubusercontent.com/radixdlt/babylon-nodecli/main/node-runner-cli/tests/userflows/install-systemd-simple.sh -O install-systemd-simple.sh
           chmod +x  ./install-systemd-simple.sh
-          echo "generating artifact"
-          bash generate_artifact.sh
-          echo "Starting a small webservice to serve nginx config."
-          python3 -m http.server 9999 --bind 127.0.0.1 &
-          echo "test" > test
-          curl https://127.0.0.1:9999/test
           ./install-systemd-simple.sh
         env:
           NGINX_ADMIN_PASSWORD: ${{ secrets.RANDOM_TEST_PASSWORD }}
