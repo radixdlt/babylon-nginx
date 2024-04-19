@@ -75,9 +75,9 @@ fi
 
 [ "$INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE" ] || export INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE=false
 if [[ "$INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE" == true || "$INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE" == "True" ]];then
-  transactions_conf_file="engine-state"
-  export INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE="include conf.d/${transactions_conf_file}.conf;"
-  DOLLAR='$' envsubst </etc/nginx/conf.d/${transactions_conf_file}.conf.envsubst >/etc/nginx/conf.d/${transactions_conf_file}.conf
+  engine_state_conf_file="engine-state"
+  export INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE="include conf.d/${engine_state_conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${engine_state_conf_file}.conf.envsubst >/etc/nginx/conf.d/${engine_state_conf_file}.conf
 fi
 
 
