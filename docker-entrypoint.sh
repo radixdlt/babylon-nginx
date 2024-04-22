@@ -73,8 +73,8 @@ if [[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" == true || "$RADIXDLT_TRANSACTIONS_API
   DOLLAR='$' envsubst </etc/nginx/conf.d/${transactions_conf_file}.conf.envsubst >/etc/nginx/conf.d/${transactions_conf_file}.conf
 fi
 
-[ "$INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE" ] || export INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE=false
-if [[ "$INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE" == true || "$INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE" == "True" ]];then
+[ "$RADIXDLT_ENGINE_STATE_ENABLE" ] || export RADIXDLT_ENGINE_STATE_ENABLE=false
+if [[ "$RADIXDLT_ENGINE_STATE_ENABLE" == true || "$ADIXDLT_ENGINE_STATE_ENABLE" == "True" ]];then
   engine_state_conf_file="engine-state"
   export INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE="include conf.d/${engine_state_conf_file}.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/${engine_state_conf_file}.conf.envsubst >/etc/nginx/conf.d/${engine_state_conf_file}.conf
