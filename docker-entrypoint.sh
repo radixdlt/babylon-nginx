@@ -48,6 +48,7 @@ set_default_rate_limits
 [ "$RADIXDLT_CORE_API_PORT" ] || export RADIXDLT_CORE_API_PORT=3333
 [ "$RADIXDLT_SYSTEM_API_PORT" ] || export RADIXDLT_SYSTEM_API_PORT=3334
 [ "$RADIXDLT_PROMETHEUS_API_PORT" ] || export RADIXDLT_PROMETHEUS_API_PORT=3335
+[ "$RADIXDLT_ENGINE_STATE_PORT" ] || export RADIXDLT_ENGINE_STATE_PORT=3336
 [ "$NGINX_VALIDATOR_TCP_PORT" ] || export NGINX_VALIDATOR_TCP_PORT=30000
 [ "$NGINX_CLIENT_HTTP_PORT" ] || export NGINX_CLIENT_HTTP_PORT=8080
 
@@ -70,6 +71,13 @@ if [[ "$RADIXDLT_TRANSACTIONS_API_ENABLE" == true || "$RADIXDLT_TRANSACTIONS_API
   transactions_conf_file="transactions"
   export INCLUDE_RADIXDLT_TRANSACTIONS_API_ENABLE="include conf.d/${transactions_conf_file}.conf;"
   DOLLAR='$' envsubst </etc/nginx/conf.d/${transactions_conf_file}.conf.envsubst >/etc/nginx/conf.d/${transactions_conf_file}.conf
+fi
+
+[ "$RADIXDLT_ENGINE_STATE_ENABLE" ] || export RADIXDLT_ENGINE_STATE_ENABLE=false
+if [[ "$RADIXDLT_ENGINE_STATE_ENABLE" == true || "$ADIXDLT_ENGINE_STATE_ENABLE" == "True" ]];then
+  engine_state_conf_file="engine-state"
+  export INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE="include conf.d/${engine_state_conf_file}.conf;"
+  DOLLAR='$' envsubst </etc/nginx/conf.d/${engine_state_conf_file}.conf.envsubst >/etc/nginx/conf.d/${engine_state_conf_file}.conf
 fi
 
 

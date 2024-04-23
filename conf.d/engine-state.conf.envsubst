@@ -1,0 +1,8 @@
+location /engine-state {
+    auth_basic_user_file /etc/nginx/secrets/htpasswd.admin;
+    auth_basic on;
+    proxy_pass ${DOLLAR}engine_state;
+    include conf.d/enable-websocket.conf;
+    include conf.d/enable-cors.conf;
+    include conf.d/enable-compression.conf;
+}

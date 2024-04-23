@@ -124,6 +124,7 @@ http {
         set ${DOLLAR}core_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_CORE_API_PORT;
         set ${DOLLAR}system_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_SYSTEM_API_PORT;
         set ${DOLLAR}prometheus_metrics_api http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_PROMETHEUS_API_PORT;
+        set ${DOLLAR}engine_state http://$RADIXDLT_VALIDATOR_HOST:$RADIXDLT_ENGINE_STATE_PORT;
         set ${DOLLAR}gateway_api http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_API_PORT;
         set ${DOLLAR}gateway_api_metrics http://$RADIXDLT_GATEWAY_API_HOST:$RADIXDLT_GATEWAY_METRICS_PORT;
         set ${DOLLAR}data_aggregator_metrics http://$RADIXDLT_DATA_AGGREGATOR_HOST:$RADIXDLT_DATA_AGGREGATOR_METRICS_PORT;
@@ -132,6 +133,7 @@ http {
         ${INCLUDE_RADIXDLT_TRANSACTIONS_API_ENABLE}
         ${INCLUDE_RADIXDLT_GATEWAY_API_ENABLE}
         ${INCLUDE_RADIXDLT_CORE_API_ENABLE}
+        ${INCLUDE_RADIXDLT_ENGINE_STATE_ENABLE}
 
         # keep metrics api inclusion before system api inclusion so that metrics path takes priority for metrics basic auth settings it has
         ${INCLUDE_RADIXDLT_METRICS_API_ENABLE}
