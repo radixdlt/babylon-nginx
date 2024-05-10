@@ -99,16 +99,16 @@ http {
 
     ${INCLUDE_DEFAULT_RATE_LIMITS}
 
-    error_log stderr notice;
+    error_log /dev/stderr notice;
     server {
         listen 443 ssl;
         server_name localhost;
 
         include conf.d/enable-compression.conf;
 
-        access_log stderr json_analytics if=${DOLLAR}loggable;
+        access_log /dev/stderr json_analytics if=${DOLLAR}loggable;
         access_log $NGINX_LOGS_DIR/access_bad.log json_analytics if=${DOLLAR}loggable;
-        access_log stdout json_analytics;
+        access_log /dev/stdout json_analytics;
 
         #include conf.d/cloudflare-allow.conf;
         #deny all;

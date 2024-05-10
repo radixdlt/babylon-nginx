@@ -16,8 +16,9 @@ sed '1,/# nginx configuration/!d' docker-entrypoint.sh  | sed 's/\/etc\/nginx/${
 mv ${PWD}/nginx.conf ${PWD}/$nginx_file_name
 #Remove nginx user
 sed -i "s|user nginx;|include \/etc\/nginx\/modules-enabled\/*.conf;|g" ${PWD}/$nginx_file_name
-#Change /dev/stdout
+#Change /dev/stdout and /dev/stderr
 sed -i "s|\/dev\/stdout|\/var\/log\/nginx\/access.log|g" ${PWD}/$nginx_file_name
+sed -i "s|\/dev\/stderr|\/var\/log\/nginx\/error.log|g" ${PWD}/$nginx_file_name
 zip -r babylon-nginx-fullnode-conf.zip conf.d/ certs/ nginx-fullnode.conf
 #Cleanup
 rm nginx-fullnode.conf
