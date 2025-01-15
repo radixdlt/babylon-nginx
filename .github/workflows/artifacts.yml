@@ -10,7 +10,7 @@ on:
 name: Build artifacts
 
 env:
-  BABYLON_NODECLI_VERSION: 2.1.2
+  BABYLON_NODECLI_VERSION: 2.2.4
 
 permissions:
   id-token: write
